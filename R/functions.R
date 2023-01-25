@@ -9,7 +9,7 @@ read_xyl <-  function(df){
 }
 
 read_NAG <-  function(df){
-  measurement=fread(df,  skip=63, select = c(26:30), col_names=paste0("rep", seq_along(1:5)))
+  measurement=read_excel(df,  range = "Z64:AD64",  col_names=paste0("rep", seq_along(1:5)))
   return(measurement)
 }
 
@@ -29,11 +29,14 @@ read_L_DOPA = function(df){
 }
 
 name_change = function(x) {
-    names(x)=substr(names(x), 10, nchar(names(x))-5)
+   substr(x$sample, 10, nchar(x$sample)-5)
 }
 
-mean_value = function (x){
-  result= mean(unlist(x))
-  return(result)
+enzyme_as_data_table = function(x, func) {
+  df=as.data.table(t(mapply(x, FUN=func, USE.NAMES = TRUE)), keep.rownames="sample")
+  df$sample = name_change(df)
+  
+  return(df)
 }
+
 
