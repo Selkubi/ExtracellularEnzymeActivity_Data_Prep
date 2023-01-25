@@ -39,4 +39,21 @@ enzyme_as_data_table = function(x, func) {
   return(df)
 }
 
+convert_to_numeric = function(x){
+  x[,`:=`(rep1 = as.numeric(rep1),
+            rep2 = as.numeric(rep2),
+            rep3 = as.numeric(rep3), 
+            rep4 = as.numeric(rep4),
+            rep5 = as.numeric(rep5))]
+}
+
+calculate_median = function (x) {
+  x$median=apply(x[,-1], 1, median)
+  return(x)
+}
+
+xyl_gly = function (x,y) {
+  apply(x[,-1], 1, median)
+}
+
 

@@ -1,6 +1,7 @@
 setwd("..")
 library(data.table)
 library(readxl)
+library(purrr)
 
 BiblioDir = list.dirs(path = "data", full.names =T, recursive = F)
 meta=list.files(BiblioDir, full.names = T)
@@ -15,5 +16,10 @@ Xyl = enzyme_as_data_table(paths, func=read_xyl)
 NAG = enzyme_as_data_table(paths, func=read_NAG)
 Pho = enzyme_as_data_table(paths, func=read_Pho)
 Cbh = enzyme_as_data_table(paths, func=read_Cbh)
-L_dopa = enzyme_as_data_table(paths, func=read_L_DOPA)
+Ldopa = enzyme_as_data_table(paths, func=read_L_DOPA)
 
+
+list_data=map(list(Gly=Gly, Xyl=Xyl, NAG=NAG, Pho=Pho, Cbh=Cbh, Ldopa=Ldopa), convert_to_numeric)
+list_data=map(list_data, calculate_median)
+
+map2(list_data$Gly[,7],list_data$Xyl[,7], .f= ~.y / .x)
