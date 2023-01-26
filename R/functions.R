@@ -58,43 +58,43 @@ calculate_median = function (x) {
 }
 
 calculate_xyl_gly = function (x) {
-  cbind(sample = x$Gly$sample, map2_dfr(x$Gly[,"median"],x$Xyl[,"median"],"sample", 
+  data.table(sample = x$Gly$sample, xyl_gly = map2_dfr(x$Gly[,"median"],x$Xyl[,"median"],"sample", 
                                        .f= ~.y / .x, ))
 }
 
 calculate_glu.xyl_cbh = function (x) {
-  cbind(sample = x$Gly$sample, map2_dfr(x$Gly[,7],x$Xyl[,"median"], x$Cbh[,"median"], "sample", 
+  data.table(sample = x$Gly$sample, glu.xyl_cbh = map2_dfr(x$Gly[,"median"],x$Xyl[,"median"], x$Cbh[,"median"], "sample", 
                                        .f= ~((..1 + ..2)/..3)))
   
 }
 
 calculate_glu_pep = function (x) {
-  cbind(sample = x$Gly$sample, map2_dfr(x$Gly[,"median"],x$Pep[,"median"], "sample", 
+  data.table(sample = x$Gly$sample, glu_pep = map2_dfr(x$Gly[,"median"],x$Pep[,"median"], "sample", 
                                .f= ~.x /.y))
 }
 
 calculate_pep_pho = function (x) {
-  cbind(sample = x$Pep$sample, map2_dfr(x$Pep[,"median"],x$Pho[,"median"], "sample", 
+  data.table(sample = x$Pep$sample, pep_pho = map2_dfr(x$Pep[,"median"],x$Pho[,"median"], "sample", 
                                .f= ~.x /.y))
 }
 
 calculate_glu_nag = function (x) {
-  cbind(sample = x$Gly$sample, map2_dfr(x$Gly[,"median"], x$NAG[,"median"], "sample", 
+  data.table(sample = x$Gly$sample, glu_nag = map2_dfr(x$Gly[,"median"], x$NAG[,"median"], "sample", 
                                .f= ~.x /.y))
 }
 
 calculate_glu_ldopa = function (x) {
-  cbind(sample = x$Gly$sample, map2_dfr(x$Gly[,"median"], x$Ldopa[,"median"], "sample", 
+  data.table(sample = x$Gly$sample, glu_ldopa = map2_dfr(x$Gly[,"median"], x$Ldopa[,"median"], "sample", 
                                .f= ~.x /.y))
 }
 
 calculate_cbh_ldopa = function (x) {
-  cbind(sample = x$Cbh$sample, map2_dfr(x$Cbh[,"median"], x$Ldopa[,"median"], "sample", 
+  data.table(sample = x$Cbh$sample, cbh_ldopa = map2_dfr(x$Cbh[,"median"], x$Ldopa[,"median"], "sample", 
                                .f= ~.x /.y))
 }
 
 calculate_nag_ldopa = function (x) {
-  cbind(sample = x$NAG$sample, map2_dfr(x$NAG[,"median"], x$Ldopa[,"median"], "sample", 
+  data.table(sample = x$NAG$sample, nag_ldopa = map2_dfr(x$NAG[,"median"], x$Ldopa[,"median"], "sample", 
                                .f= ~.x /.y))
 }
 
