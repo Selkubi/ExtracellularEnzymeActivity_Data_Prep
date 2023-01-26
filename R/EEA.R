@@ -7,7 +7,7 @@ BiblioDir = list.dirs(path = "data", full.names =T, recursive = F)
 meta=list.files(BiblioDir, full.names = T)
 paths <- meta[substr(meta, 6,8)%in%c("S09", "S13", "S16", "S19")]#The real community samples (others are water)
 
-source("EEA_FLEE/R/functions.R") # Load the functions to read each enzyme spesifically. Change this depending on your EEA read sheets
+source("ExtracellularEnzymeActivity_Data_Prep/R/functions.R") # Load the functions to read each enzyme spesifically. Change this depending on your EEA read sheets
 
 # Import each enzyme, check the values individually to see if there is a crazy value. 
 #If too much, use the median for now or trim when calculating the mean. 
@@ -17,9 +17,22 @@ NAG = enzyme_as_data_table(paths, func=read_NAG)
 Pho = enzyme_as_data_table(paths, func=read_Pho)
 Cbh = enzyme_as_data_table(paths, func=read_Cbh)
 Ldopa = enzyme_as_data_table(paths, func=read_L_DOPA)
+Pep = enzyme_as_data_table(paths, func=read_Pep)
 
 
-list_data=map(list(Gly=Gly, Xyl=Xyl, NAG=NAG, Pho=Pho, Cbh=Cbh, Ldopa=Ldopa), convert_to_numeric)
+list_data=map(list(Gly=Gly, Xyl=Xyl, NAG=NAG, Pho=Pho, Cbh=Cbh, Ldopa=Ldopa, Pep=Pep), convert_to_numeric)
 list_data=map(list_data, calculate_median)
 
-map2(list_data$Gly[,7],list_data$Xyl[,7], .f= ~.y / .x)
+# Calculate each enzyme ratio separately. Theis functions are defined in the functions folder.
+# For alterations, or changes in how the enzyme ratios calculations, check there 
+
+ER_xyl_glu = calculate_xyl_gly (list_data)
+ER_glu.xyl_cbh = calculate_glu.xyl_cbh (list_data)
+ER_glu_pep = calculate_glu_pep(list_data)
+ER_pep_pho = calculate_pep_pho(list_data)
+ER_glu_nag = calculate_glu_nag(list_data)
+ER_glu_ldopa = calculate_glu_ldopa(list_data)
+ER_cbh_ldopa = calculate_cbh_ldopa(list_data)
+ER_nag_ldopa = calculate_nag_ldopa(list_data)
+
+merge("ER_xyl_glu"==ER_xyl_glu, ER_glu.xyl_cbh, by="sample")
