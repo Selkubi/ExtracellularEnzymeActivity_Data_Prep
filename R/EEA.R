@@ -1,4 +1,4 @@
-setwd("..")
+#setwd("..")
 library(data.table)
 library(readxl)
 library(purrr)
@@ -27,7 +27,7 @@ list_data=map(list_data, calculate_median)
 # For alterations, or changes in how the enzyme ratios calculations, check there 
 
 ER_xyl_glu = calculate_xyl_gly (list_data)
-ER_glu.xyl_cbh = calculate_glu.xyl_cbh (list_data)
+ER_glu_xyl_cbh = calculate_glu.xyl_cbh (list_data)
 ER_glu_pep = calculate_glu_pep(list_data)
 ER_pep_pho = calculate_pep_pho(list_data)
 ER_glu_nag = calculate_glu_nag(list_data)
@@ -35,4 +35,5 @@ ER_glu_ldopa = calculate_glu_ldopa(list_data)
 ER_cbh_ldopa = calculate_cbh_ldopa(list_data)
 ER_nag_ldopa = calculate_nag_ldopa(list_data)
 
-merge("ER_xyl_glu"==ER_xyl_glu, ER_glu.xyl_cbh, by="sample")
+list =  list(ER_xyl_glu, ER_glu_xyl_cbh, ER_glu_pep, ER_pep_pho, ER_glu_nag, ER_glu_ldopa, ER_cbh_ldopa, ER_nag_ldopa)
+ER_data = Reduce(function (...)  merge(..., by="sample") , list) 
