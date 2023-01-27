@@ -1,36 +1,62 @@
-read_glu <-  function(df){
-  measurement=read_excel(df,  range = "Z52:AD52",  col_names=paste0("rep", seq_along(1:5)))
-  return(measurement)
+
+read_positive_cells <- function(data) {
+  return(ifelse(data[1,1:5]>0, data[2,1:5], 0))
 }
 
+read_glu <-  function(df){
+  measurement=read_xlsx(df,  range = anchored(anchor = "Z51", dim = c(2L, 5L), input = NULL, col_names = NULL,
+                                              byrow = FALSE),  col_names=paste0("rep", seq_along(1:5)))
+  final=read_positive_cells(measurement)
+  return(final)
+}
+
+
+
 read_xyl <-  function(df){
-  measurement=read_excel(df,  range = "Z58:AD58",  col_names=paste0("rep", seq_along(1:5)))
-  return(measurement)
+  measurement=read_xlsx(df,  range = anchored(anchor = "Z57", dim = c(2L, 5L), input = NULL, col_names = NULL,
+                                                                     byrow = FALSE),  col_names=paste0("rep", seq_along(1:5)))
+  final=read_positive_cells(measurement)
+  return(final)
 }
 
 read_NAG <-  function(df){
-  measurement=read_excel(df,  range = "Z64:AD64",  col_names=paste0("rep", seq_along(1:5)))
-  return(measurement)
+  measurement=read_xlsx(df,  range = anchored(anchor = "Z63", dim = c(2L, 5L), input = NULL, col_names = NULL,
+                                              byrow = FALSE),  col_names=paste0("rep", seq_along(1:5)))
+  final=read_positive_cells(measurement)
+  return(final)
 }
 
 read_Pho <-  function(df){
-  measurement=read_excel(df,  range = "Z70:AD70",  col_names=paste0("rep", seq_along(1:5)))
-  return(measurement)
+  measurement=read_xlsx(df,  range = anchored(anchor = "Z69", dim = c(2L, 5L), input = NULL, col_names = NULL,
+                                              byrow = FALSE),  col_names=paste0("rep", seq_along(1:5)))
+  final=read_positive_cells(measurement)
+  return(final)
 }
 
 read_Cbh <-  function(df){
-  measurement=read_excel(df,  range = "Z76:AD76",  col_names=paste0("rep", seq_along(1:5)))
-  return(measurement)
+  measurement=read_xlsx(df,  range = anchored(anchor = "Z75", dim = c(2L, 5L), input = NULL, col_names = NULL,
+                                              byrow = FALSE),  col_names=paste0("rep", seq_along(1:5)))
+  final=read_positive_cells(measurement)
+  return(final)
 }
+
+
+read_Pep = function(df){
+  measurement=read_xlsx(df,  range = anchored(anchor = "Z83", dim = c(2L, 5L), input = NULL, 
+                                              byrow = FALSE),  col_names=paste0("rep", seq_along(1:5)))
+  final=read_positive_cells(measurement)
+  return(final)
+}
+
+return_positive_ldopa = function(data) {
+  return(ifelse(data[,1:5]>0, data[,1:5], 0))
+}
+
 
 read_L_DOPA = function(df){
   measurement=read_excel(df,  range = "Z114:AD114",  col_names=paste0("rep", seq_along(1:5)))
-  return(measurement)
-}
-
-read_Pep = function(df){
-  measurement=read_excel(df,  range = "Z84:AD84",  col_names=paste0("rep", seq_along(1:5)))
-  return(measurement)
+  final = return_positive_ldopa(measurement)
+  return(final)
 }
 
 name_change = function(x) {
@@ -45,11 +71,11 @@ enzyme_as_data_table = function(x, func) {
 }
 
 convert_to_numeric = function(x){
-  x[,`:=`(rep1 = as.numeric(rep1),
-            rep2 = as.numeric(rep2),
-            rep3 = as.numeric(rep3), 
-            rep4 = as.numeric(rep4),
-            rep5 = as.numeric(rep5))]
+  x[,`:=`(V1 = as.numeric(V1),
+            V2 = as.numeric(V2),
+            V3 = as.numeric(V3), 
+            V4 = as.numeric(V4),
+            V5 = as.numeric(V5))]
 }
 
 calculate_median = function (x) {
