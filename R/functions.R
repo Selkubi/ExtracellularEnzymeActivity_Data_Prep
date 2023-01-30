@@ -11,7 +11,6 @@ read_glu <-  function(df){
 }
 
 
-
 read_xyl <-  function(df){
   measurement=read_xlsx(df,  range = anchored(anchor = "Z57", dim = c(2L, 5L), input = NULL, col_names = NULL,
                                                                      byrow = FALSE),  col_names=paste0("rep", seq_along(1:5)))
@@ -40,7 +39,6 @@ read_Cbh <-  function(df){
   return(final)
 }
 
-
 read_Pep = function(df){
   measurement=read_xlsx(df,  range = anchored(anchor = "Z83", dim = c(2L, 5L), input = NULL, 
                                               byrow = FALSE),  col_names=paste0("rep", seq_along(1:5)))
@@ -51,7 +49,6 @@ read_Pep = function(df){
 return_positive_ldopa = function(data) {
   return(ifelse(data[,1:5]>0, data[,1:5], 0))
 }
-
 
 read_L_DOPA = function(df){
   measurement=read_excel(df,  range = "Z114:AD114",  col_names=paste0("rep", seq_along(1:5)))
@@ -124,6 +121,12 @@ calculate_nag_ldopa = function (x) {
                                .f= ~.x /.y))
 }
 
+is.nan.data.frame <- function(x) {
+  do.call(cbind, lapply(x, is.nan))
+}
 
+is.inf.data.frame <- function(x) {
+  do.call(cbind, lapply(x, is.infinite))
+}
 
 

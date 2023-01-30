@@ -15,9 +15,9 @@ fill_selected = function(){
     name =  "Column No",
     labels=c("Col1", "Col2", "Col3"), 
     values=c( "#DB2A2A", "#FFBF1C", "#E0E334"),
-    guide="none")
+    guide="legend")
 } 
 
 theme_facets = function() {
-  theme(panel.background = element_rect(fill = "white", colour = "grey50"))
+  theme(panel.background = element_rect(fill = "white", colour = "grey50"), legend.position="bottom")
 }

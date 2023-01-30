@@ -18,9 +18,9 @@ ER_data$col_no=factor(ER_data$col_no,
 melted_ER=melt(ER_data, FUN=median, na.rm=T, by= ER_data[,c("sample_date", "col_no")])
 
 ggplot(melted_ER)+
-  facet_wrap(~variable, scale="free")+
+  facet_wrap(~variable, scale="free", nrow=2)+
   geom_boxplot(aes(x=as.factor(sample_date), y=(value),  fill=as.factor(col_no)))+
- color_selected() + label_shape() + fill_selected() + theme_facets()+
+  color_selected() + fill_selected() + theme_facets()+
   geom_hline(yintercept = c(0), color="red", linetype="dashed")
 
 
