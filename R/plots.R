@@ -38,3 +38,33 @@ ggplot(melted_median_ER_data)+
   geom_line(aes(x=sample_date, y=value, group=col_no, col=col_no), linewidth=1.2)+
   color_selected() + label_shape() + fill_selected() + theme_facets()+
   geom_hline(yintercept = c(0), color="red", linetype="dashed")
+
+# biplot
+DOC=fread("C:/Users/c7701233/Nextcloud/Column-Experiment/DOC_measurements/DOC_git/Expmeriment_DOC_dataprep/DOC_consumption.csv", sep = ",")
+DOC_consumed = melt(DOC[sample_date%in%c("S10", "S13", "S16", "S19")], 
+                    id.vars=c("replicate", "sample_date"), 
+                    measure.vars=c("C1consumed", "C2consumed", "C3consumed"))
+
+DOC_consumed$variable = factor(DOC_consumed$variable, 
+                               levels = c("C1consumed", "C2consumed", "C3consumed"), 
+                               labels = c("Col1", "Col2", "Col3"))
+
+DOC_consumed$sample_date = factor(DOC_consumed$sample_date, 
+                               levels = c("S10", "S13", "S16", "S19"), 
+                               labels = c("Day0", "Day3", "Day10", "Day17"))
+colnames(DOC_consumed) = c("replicate", "sample_date","col_no", "DOC_consumed") 
+
+ER_data = merge(ER_data, DOC_consumed, by.x=c("sample_date", "replicate", "col_no"),  by.y=c("sample_date", "replicate", "col_no"), all.x=T)
+
+ggplot(ER_data, aes(x = pep_pho.median, y = glu_pep.median))+
+  geom_point(aes(color=DOC_consumed), size=3)+
+  scale_colour_gradient2(
+    low = ("red"),
+    mid = "green",
+    high = ("blue"),
+    midpoint = 0,
+    space = "Lab",
+    na.value = "grey50",
+    guide = "colourbar",
+    aesthetics = "colour"
+  )

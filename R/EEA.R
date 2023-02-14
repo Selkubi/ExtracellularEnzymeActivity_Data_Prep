@@ -3,9 +3,9 @@ library(data.table)
 library(readxl)
 library(purrr)
 
-BiblioDir = list.dirs(path = "data", full.names =T, recursive = F)
-meta=list.files(BiblioDir, full.names = T)
-paths <- meta[substr(meta, 6,8)%in%c("S09", "S13", "S16", "S19")]#The real community samples (others are water)
+BiblioDir = list.dirs(path = "data2", full.names =T, recursive = F)
+meta = list.files(BiblioDir, full.names = T)
+paths = meta[substr(meta, 7,9)%in%c("S09", "S13", "S16", "S19")]#The real community samples (others are water)
 
 source("ExtracellularEnzymeActivity_Data_Prep/R/functions.R") # Load the functions to read each enzyme spesifically. Change this depending on your EEA read sheets
 
@@ -21,7 +21,7 @@ Pep = enzyme_as_data_table(paths, func=read_Pep)
 
 
 list_data=map(list(Gly=Gly, Xyl=Xyl, NAG=NAG, Pho=Pho, Cbh=Cbh, Ldopa=Ldopa, Pep=Pep), convert_to_numeric)
-list_data=map(list_data, calculate_median)
+list_data=map(list_data, calculate_mean)
 
 # Calculate each enzyme ratio separately. These functions are defined in the functions folder.
 # For alterations, or changes in how the enzyme ratios calculations, check there 
@@ -41,3 +41,4 @@ ER_data = Reduce(function (...)  merge(..., by="sample") , list)
 # Convert the NaN and Inf values to 0 since these are all below the detection limit values due to the negative measurements, indicating the real fluorescence is close to 0
 ER_data[is.nan.data.frame(ER_data)] <- 0
 ER_data[is.inf.data.frame(ER_data)] <- 0
+

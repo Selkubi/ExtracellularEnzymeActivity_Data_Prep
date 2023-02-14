@@ -18,6 +18,31 @@ fill_selected = function(){
     guide="legend")
 } 
 
-theme_facets = function() {
-  theme(panel.background = element_rect(fill = "white", colour = "grey50"), legend.position="bottom")
+theme_boxplot = function () {
+  theme_bw()+
+    theme(axis.text = element_text(size=10), 
+          axis.title = element_text(size=12), 
+          text =  element_text(size=10))
 }
+
+set_coloring_column = function(data) {
+  data$highlight = factor(ifelse(data$sample_date=="Day0" & data$col_no=="Col1", "before C1", 
+                                 ifelse(data$sample_date=="Day0" & data$col_no=="Col2", "before C2",
+                                        ifelse(data$sample_date=="Day0" & data$col_no=="Col3", "before C3", 
+    
+                                    ifelse(data$sample_date != c("Day0") & data$col_no=="Col1", "after C1",
+                                          ifelse(data$sample_date != c("Day0") & data$col_no=="Col2", "after C2",
+                                              ifelse(data$sample_date != c("Day0") & data$col_no=="Col3", "after C3",
+                                                                                         "Reservoirs")))))))
+  return(data)
+}
+
+
+
+fill_col_no = function(){
+  scale_fill_manual( name =  "Column Location",
+                     #labels=c("Column 1", "Column 2", "Column 3", "Before Reversal"), 
+                     values=c("#1741a3", "#4e8fc8", "#a698cc", "grey90", "grey90", "grey90"),
+                     guide="legend")
+}
+                                                       

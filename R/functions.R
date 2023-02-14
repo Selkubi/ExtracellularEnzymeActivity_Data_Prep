@@ -47,7 +47,7 @@ read_Pep = function(df){
 }
 
 return_positive_ldopa = function(data) {
-  return(ifelse(data[,1:5]>0, data[,1:5], 0))
+  return(ifelse(data[,1:5]>0, data[,1:5], NA))
 }
 
 read_L_DOPA = function(df){
@@ -57,7 +57,7 @@ read_L_DOPA = function(df){
 }
 
 name_change = function(x) {
-   substr(x$sample, 10, nchar(x$sample)-5)
+   substr(x$sample, 11, nchar(x$sample)-5)
 }
 
 enzyme_as_data_table = function(x, func) {
@@ -76,7 +76,12 @@ convert_to_numeric = function(x){
 }
 
 calculate_median = function (x) {
-  x$median=apply(x[,-1], 1, median)
+  x$median=apply(x[,-1], 1, median, na.rm=T)
+  return(x)
+}
+
+calculate_mean = function (x) {
+  x$median=apply(x[,-1], 1, mean, na.rm=T, trim=0.25)
   return(x)
 }
 
