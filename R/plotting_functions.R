@@ -18,12 +18,13 @@ fill_selected = function(){
     guide="legend")
 } 
 
-theme_boxplot = function () {
-  theme_bw()+
-    theme(axis.text = element_text(size=10), 
-          axis.title = element_text(size=12), 
-          text =  element_text(size=10))
-}
+theme_boxplot =  function(){
+    theme_bw()+
+      theme(axis.text = element_text(size=12), 
+            axis.title = element_text(size=12), 
+            text =  element_text(size=12),
+            axis.text.x = element_text(size=12))
+  }
 
 set_coloring_column = function(data) {
   data$highlight = factor(ifelse(data$sample_date=="Day0" & data$col_no=="Col1", "before C1", 
@@ -38,11 +39,33 @@ set_coloring_column = function(data) {
 }
 
 
-
 fill_col_no = function(){
   scale_fill_manual( name =  "Column Location",
                      #labels=c("Column 1", "Column 2", "Column 3", "Before Reversal"), 
-                     values=c("#1741a3", "#4e8fc8", "#a698cc", "grey90", "grey90", "grey90"),
+                     values=c("#1741a3", "#4e8fc8", "#a698cc", "white", "white", "white"),
                      guide="legend")
+} 
+
+color_col_no = function(){
+  scale_color_manual( name =  "Column Location",
+                      #labels=c("Column 1", "Column 2", "Column 3", "Before Reversal"), 
+                      values=c("black", "black", "black", "#1741a3", "#4e8fc8", "#a698cc"),
+                      guide="legend")
+} 
+
+col_names <- c(
+  `Reservoir` = "Res.",
+  `Col1` = "Column 1",
+  `Col2` = "Column 2",
+  `Col3` = "Column 3"
+)
+
+n_fun = function(x){
+  return(data.frame(y = max(x, na.rm=T), label = paste0(length(x))))
+}                                                      
+
+observation_numbers = function (x) {
+  stat_summary(fun.data = n_fun, geom = "text", na.rm=T, aes(vjust=0))
 }
+
                                                        

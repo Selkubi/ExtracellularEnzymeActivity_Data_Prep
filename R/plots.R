@@ -15,29 +15,80 @@ ER_data$col_no=factor(ER_data$col_no,
                                  labels=c("Col1", "Col2", "Col3")) 
 
 
-melted_ER=melt(ER_data, FUN=median, na.rm=T, by= ER_data[,c("sample_date", "col_no")])
+melted_ER=melt(ER_data, id.vars= c("sample","sample_date", "col_no", "replicate"))
 
 ggplot(melted_ER)+
   facet_wrap(~variable, scale="free", nrow=2)+
   geom_boxplot(aes(x=as.factor(sample_date), y=(value),  fill=as.factor(col_no)))+
-  color_selected() + fill_selected() + theme_facets()+
+  color_selected() + fill_selected() + theme_boxplot()+
   geom_hline(yintercept = c(0), color="red", linetype="dashed")
 
+# Individual enzyme ratio boxplots
+ER_data=set_coloring_column(ER_data)
 
-# lineplot with the median values
-cols=colnames(ER_data[,-c(1, 10:12)])
-ER_data[, paste0(cols) := lapply(.SD, median, na.rm=T), .SDcols = cols, by = .(sample_date, col_no)]
-ER_sum=aggregate(ER_data[,-c(1, 10:12)], FUN=median, na.rm=T, by = ER_data[,c("sample_date", "col_no")], data=ER_data)
+#xyl_gly.median
+ggplot(ER_data, mapping=aes(x=sample_date, y=xyl_gly.median))+
+  facet_grid(~col_no, labeller=as_labeller(col_names))+
+  geom_boxplot(mapping=aes(fill=highlight, col=highlight))+
+  fill_col_no()+ color_col_no()+
+  theme_boxplot()+observation_numbers()+
+  ylab("Xyl/Glu")
 
-melted_median_ER_data=melt(ER_sum, id.vars = c("sample_date", "col_no"), 
-                    measure.vars = colnames(ER_sum)[endsWith(colnames(ER_sum),  c("median"))])
+#glu.xyl_cbh.median
+ggplot(ER_data, mapping=aes(x=sample_date, y=glu.xyl_cbh.median))+
+  facet_grid(~col_no, labeller=as_labeller(col_names))+
+  geom_boxplot(mapping=aes(fill=highlight, col=highlight))+
+  fill_col_no()+ color_col_no()+
+  theme_boxplot()+observation_numbers()+
+  ylab("Glu+Xyl/Cbh")
 
-ggplot(melted_median_ER_data)+
-  facet_wrap (~variable, scale="free")+
-  geom_point(aes(x=sample_date, y=value,  fill=col_no, shape=col_no), size=3)+
-  geom_line(aes(x=sample_date, y=value, group=col_no, col=col_no), linewidth=1.2)+
-  color_selected() + label_shape() + fill_selected() + theme_facets()+
-  geom_hline(yintercept = c(0), color="red", linetype="dashed")
+#glu_pep.median
+ggplot(ER_data, mapping=aes(x=sample_date, y=glu_pep.median))+
+  facet_grid(~col_no, labeller=as_labeller(col_names))+
+  geom_boxplot(mapping=aes(fill=highlight, col=highlight))+
+  fill_col_no()+ color_col_no()+
+  theme_boxplot()+observation_numbers()+
+  ylab("Glu/Pep")
+
+#pep_pho.median
+ggplot(ER_data, mapping=aes(x=sample_date, y=pep_pho.median))+
+  facet_grid(~col_no, labeller=as_labeller(col_names))+
+  geom_boxplot(mapping=aes(fill=highlight, col=highlight))+
+  fill_col_no()+ color_col_no()+
+  theme_boxplot()+observation_numbers()+
+  ylab("Pep/Phosph")
+
+#glu_nag.median
+ggplot(ER_data, mapping=aes(x=sample_date, y=glu_nag.median))+
+  facet_grid(~col_no, labeller=as_labeller(col_names))+
+  geom_boxplot(mapping=aes(fill=highlight, col=highlight))+
+  fill_col_no()+ color_col_no()+
+  theme_boxplot()+observation_numbers()+
+  ylab("Glu/Nag")
+
+#glu_ldopa.median
+ggplot(ER_data, mapping=aes(x=sample_date, y=glu_ldopa.median))+
+  facet_grid(~col_no, labeller=as_labeller(col_names))+
+  geom_boxplot(mapping=aes(fill=highlight, col=highlight))+
+  fill_col_no()+ color_col_no()+
+  theme_boxplot()+observation_numbers()+
+  ylab("Glu/L-DOPA")
+
+#cbh_ldopa.median
+ggplot(ER_data, mapping=aes(x=sample_date, y=cbh_ldopa.median))+
+  facet_grid(~col_no, labeller=as_labeller(col_names))+
+  geom_boxplot(mapping=aes(fill=highlight, col=highlight))+
+  fill_col_no()+ color_col_no()+
+  theme_boxplot()+observation_numbers()+
+  ylab("Cbh/L-DOPA")
+
+#nag_ldopa.median
+ggplot(ER_data, mapping=aes(x=sample_date, y=nag_ldopa.median))+
+  facet_grid(~col_no, labeller=as_labeller(col_names))+
+  geom_boxplot(mapping=aes(fill=highlight, col=highlight))+
+  fill_col_no()+ color_col_no()+
+  theme_boxplot()+observation_numbers()+
+  ylab("Nag/L-DOPA")
 
 # biplot
 DOC=fread("C:/Users/c7701233/Nextcloud/Column-Experiment/DOC_measurements/DOC_git/Expmeriment_DOC_dataprep/DOC_consumption.csv", sep = ",")
