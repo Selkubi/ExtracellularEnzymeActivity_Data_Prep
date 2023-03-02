@@ -19,7 +19,6 @@ Cbh = enzyme_as_data_table(paths, func=read_Cbh)
 Ldopa = enzyme_as_data_table(paths, func=read_L_DOPA)
 Pep = enzyme_as_data_table(paths, func=read_Pep)
 
-
 list_data=map(list(Gly=Gly, Xyl=Xyl, NAG=NAG, Pho=Pho, Cbh=Cbh, Ldopa=Ldopa, Pep=Pep), convert_to_numeric)
 list_data=map(list_data, calculate_mean)
 
@@ -35,10 +34,9 @@ ER_glu_ldopa = calculate_glu_ldopa(list_data)
 ER_cbh_ldopa = calculate_cbh_ldopa(list_data)
 ER_nag_ldopa = calculate_nag_ldopa(list_data)
 
-list =  list(ER_xyl_glu, ER_glu_xyl_cbh, ER_glu_pep, ER_pep_pho, ER_glu_nag, ER_glu_ldopa, ER_cbh_ldopa, ER_nag_ldopa)
+list = list(ER_xyl_glu, ER_glu_xyl_cbh, ER_glu_pep, ER_pep_pho, ER_glu_nag, ER_glu_ldopa, ER_cbh_ldopa, ER_nag_ldopa)
 ER_data = Reduce(function (...)  merge(..., by="sample") , list) 
 
 # Convert the NaN and Inf values to 0 since these are all below the detection limit values due to the negative measurements, indicating the real fluorescence is close to 0
 ER_data[is.nan.data.frame(ER_data)] <- 0
 ER_data[is.inf.data.frame(ER_data)] <- 0
-

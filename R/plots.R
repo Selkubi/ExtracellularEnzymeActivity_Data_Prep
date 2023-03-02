@@ -12,8 +12,7 @@ ER_data$sample_date=factor(ER_data$sample_date,
                            labels=c("Day0", "Day3", "Day10", "Day17")) #Convert the sample date to days as a factor for ease in plotting
 ER_data$col_no=factor(ER_data$col_no,
                                  levels=c("C1", "C2", "C3"),
-                                 labels=c("Col1", "Col2", "Col3")) 
-
+                                 labels=c("Col1", "Col2", "Col3"))
 
 melted_ER=melt(ER_data, id.vars= c("sample","sample_date", "col_no", "replicate"))
 
@@ -89,6 +88,28 @@ ggplot(ER_data, mapping=aes(x=sample_date, y=nag_ldopa.median))+
   fill_col_no()+ color_col_no()+
   theme_boxplot()+observation_numbers()+
   ylab("Nag/L-DOPA")
+
+#Leucine aminopepdinase median
+ER_data = ER_data[calculate_median(Pep)[,c(1,7)], on=.(sample=sample)]
+
+ggplot(ER_data, mapping=aes(x=sample_date, y=median))+
+  facet_grid(~col_no, labeller=as_labeller(col_names))+
+  geom_boxplot(mapping=aes(fill=highlight, col=highlight))+
+  fill_col_no()+ color_col_no()+
+  theme_boxplot()+observation_numbers()+
+  ylab("Pep")
+
+#L-DOPA median
+ER_data = ER_data[calculate_median(Ldopa)[,c(1,7)], on=.(sample=sample)]
+
+ggplot(ER_data, mapping=aes(x=sample_date, y=median))+
+  facet_grid(~col_no, labeller=as_labeller(col_names))+
+  geom_boxplot(mapping=aes(fill=highlight, col=highlight))+
+  fill_col_no()+ color_col_no()+
+  theme_boxplot()+observation_numbers()+
+  ylab("L-DOPA")
+
+
 
 # biplot
 DOC=fread("C:/Users/c7701233/Nextcloud/Column-Experiment/DOC_measurements/DOC_git/Expmeriment_DOC_dataprep/DOC_consumption.csv", sep = ",")
