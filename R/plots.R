@@ -3,8 +3,9 @@ library(data.table)
 library(ggplot2)
 
 source("ExtracellularEnzymeActivity_Data_Prep/R/functions.R")
-source("ExtracellularEnzymeActivity_Data_Prep/R/EEA.R")
-source("ExtracellularEnzymeActivity_Data_Prep/R/plotting_functions.R")
+source("ExtracellularEnzymeActivity_Data_Prep/R/plotting_functions.R") 
+source("ExtracellularEnzymeActivity_Data_Prep/R/EEA.R") # Read the enzyme results, calculate the means/medians and enzyme ratios
+
 
 ER_data[,c("sample_date", "replicate", "col_no") := tstrsplit(sample, "_")]
 ER_data$sample_date=factor(ER_data$sample_date,
@@ -16,6 +17,7 @@ ER_data$col_no=factor(ER_data$col_no,
 
 melted_ER=melt(ER_data, id.vars= c("sample","sample_date", "col_no", "replicate"))
 
+# Overview of all the enzyme ratios
 ggplot(melted_ER)+
   facet_wrap(~variable, scale="free", nrow=2)+
   geom_boxplot(aes(x=as.factor(sample_date), y=(value),  fill=as.factor(col_no)))+
@@ -25,7 +27,7 @@ ggplot(melted_ER)+
 # Individual enzyme ratio boxplots
 ER_data=set_coloring_column(ER_data)
 
-#xyl_gly.median
+# Xyloside/Glucosidase enzyme ratio 
 ggplot(ER_data, mapping=aes(x=sample_date, y=xyl_gly.median))+
   facet_grid(~col_no, labeller=as_labeller(col_names))+
   geom_boxplot(mapping=aes(fill=highlight, col=highlight))+
