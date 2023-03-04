@@ -9,8 +9,9 @@ paths = meta[substr(meta, 7,9)%in%c("S09", "S13", "S16", "S19")]#The real commun
 
 source("ExtracellularEnzymeActivity_Data_Prep/R/functions.R") # Load the functions to read each enzyme spesifically. Change this depending on your EEA read sheets
 
-# Import each enzyme, check the values individually to see if there is a crazy value. 
-#If too much, use the median for now or trim when calculating the mean. 
+# Import each enzyme, check the values individually to see if there is are outliers. 
+# If there are too many outliers, useage of the median instead of the mean would be beneficial in data exploration. 
+ 
 Gly = enzyme_as_data_table(paths, func=read_glu)
 Xyl = enzyme_as_data_table(paths, func=read_xyl)
 NAG = enzyme_as_data_table(paths, func=read_NAG)
@@ -19,6 +20,7 @@ Cbh = enzyme_as_data_table(paths, func=read_Cbh)
 Ldopa = enzyme_as_data_table(paths, func=read_L_DOPA)
 Pep = enzyme_as_data_table(paths, func=read_Pep)
 
+# Data is stored as lists for ease of use when the sample number is high
 list_data=map(list(Gly=Gly, Xyl=Xyl, NAG=NAG, Pho=Pho, Cbh=Cbh, Ldopa=Ldopa, Pep=Pep), convert_to_numeric)
 list_data=map(list_data, calculate_mean)
 
