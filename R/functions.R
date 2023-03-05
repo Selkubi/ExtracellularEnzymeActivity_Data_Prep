@@ -83,6 +83,11 @@ calculate_mean = function (x) {
   return(x)
 }
 
+correct_name = function (x) {
+  x$sample = apply(x[,1], 1, substr, start = 4, stop = 11)
+  return(x)
+}
+
 calculate_xyl_gly = function (x) {
   data.table(sample = x$Gly$sample, xyl_gly = map2_dfr(x$Gly[,"median"],x$Xyl[,"median"],"sample", 
                                        .f= ~.y / .x, ))
