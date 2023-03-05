@@ -2,8 +2,6 @@
 output: github_document
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -15,10 +13,7 @@ knitr::opts_chunk$set(error = TRUE)
 ```
 # ExtracellularEnzymeActivity_Data_Prep
 
-<!-- badges: start -->
-<!-- badges: end -->
-
-The goal of ExtracellularEnzymeActivity_Data_Prep is to import/clean and explore FLEE lab Extracellular Enzyme Activity (EEA) data from microplate readings. The data from the reader must be saved as .xlsx files, named after the sample as SampleDayNumber_replicate_factor (ex: S09_B_C3 in the sample case represents 9th day sample, replicate B, factor level "C3") within the "data" folder.
+The goal of this script is to import/clean and explore FLEE lab Extracellular Enzyme Activity (EEA) data from microplate readings. The data from the reader must be saved as .xlsx files, named after the sample as SampleDayNumber_replicate_factor (ex: S09_B_C3 in the sample case represents 9th day sample, replicate B, factor level "C3") within the "data" folder.
 
 ```{r, message = FALSE, warning = FALSE}
 library(data.table)
@@ -26,9 +21,6 @@ library(readxl)
 library(purrr)
 library(ggplot2)
 ```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
-
 Get the file names as sample names and the functions
 ```{r}
 BiblioDir = list.dirs(path = "data", full.names =T, recursive = F)
