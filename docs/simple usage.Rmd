@@ -15,7 +15,7 @@ knitr::opts_chunk$set(error = TRUE)
 ```
 # ExtracellularEnzymeActivity_Data_Prep
 
-<!-- badges: start -->
+<!-- badges: start -->a
 <!-- badges: end -->
 
 The goal of ExtracellularEnzymeActivity_Data_Prep is to import/clean and explore FLEE lab Extracellular Enzyme Activity (EEA) data from microplate readings. The data from the reader must be saved as .xlsx files, named after the sample as SampleDayNumber_replicate_factor (ex: S09_B_C3 in the sample case represents 9th day sample, replicate B, factor level "C3") within the "data" folder.
