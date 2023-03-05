@@ -68,4 +68,16 @@ observation_numbers = function (x) {
   stat_summary(fun.data = n_fun, geom = "text", na.rm=T, aes(vjust=0))
 }
 
-                                                       
+fill_col_no2 = function(){
+  scale_fill_manual( name =  "Column Location",
+                     #labels=c("Column 1", "Column 2", "Column 3", "Before Reversal"), 
+                     values=c("#1741a3", "#4e8fc8", "white", "white"),
+                     guide="legend")
+} 
+
+color_col_no2 = function(){
+  scale_color_manual( name =  "Column Location",
+                      #labels=c("Column 1", "Column 2", "Column 3", "Before Reversal"), 
+                      values=c("black", "black","#1741a3", "#4e8fc8"),
+                      guide="legend")
+} 
