@@ -39,5 +39,5 @@ list = list(ER_xyl_glu, ER_glu_xyl_cbh, ER_glu_pep, ER_pep_pho, ER_glu_nag, ER_g
 ER_data = Reduce(function(...)  merge(..., by = "sample"), list)
 
 # Convert the NaN and Inf values to 0 since these are all below the detection limit values due to the negative measurements, indicating the real fluorescence is close to 0
-ER_data[is.nan.data.frame(ER_data)] <- 0
-ER_data[is.inf.data.frame(ER_data)] <- 0
+ER_data[is.nan.data.frame(ER_data)] = 0
+ER_data[is.inf.data.frame(ER_data)] = 0
