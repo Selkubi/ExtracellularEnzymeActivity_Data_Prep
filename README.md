@@ -18,7 +18,3 @@ For sample usage see the example in the [Documentation](https://github.com/Selku
 ## 🚀 About Me
 I'm a researcher working at the intersection of microbiology, chemistry and rivers. 
 My public repositories contain projects I wrote for automating my own workflow with data coming out of my lab. 
-
-
-## Acknowledgements
- - [Awesome README](https://github.com/matiassingers/awesome-readme)
