@@ -46,15 +46,12 @@ list_data = map(list_data, calculate_mean)
 list_data = map(list_data, correct_name)
 ```
 
-Calculate each enzyme ratio separately. Check the functions folder for more details
+Calculate the enzyme ratios. Check the functions folder for more details
 ```{r}
-ER_xyl_glu = calculate_xyl_gly(list_data)
-ER_glu_xyl_cbh = calculate_glu.xyl_cbh(list_data)
+ER_data = calculate_enzyme_ratios(list_data)
 ```
 Convert the NaN and Inf values to 0 since these are all below the detection limit values due to the negative data in the measurements. 
 ``` {r}
-list = list(ER_xyl_glu, ER_glu_xyl_cbh)
-ER_data = Reduce(function(...)  merge(..., by = "sample"), list)
 ER_data[is.nan.data.frame(ER_data)] <- 0
 ER_data[is.inf.data.frame(ER_data)] <- 0
 head(ER_data)

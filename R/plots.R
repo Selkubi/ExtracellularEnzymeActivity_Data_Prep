@@ -1,14 +1,12 @@
-setwd("..")
 library(data.table)
 library(ggplot2)
 
-source("ExtracellularEnzymeActivity_Data_Prep/R/functions.R")
-source("ExtracellularEnzymeActivity_Data_Prep/R/plotting_functions.R")
-source("ExtracellularEnzymeActivity_Data_Prep/R/EEA.R") # Read the enzyme results, calculate the means/medians and enzyme ratios
+source("R/functions.R")
+source("R/plotting_functions.R")
+source("R/EEA.R") # Read the enzyme results, calculate the means/medians and enzyme ratios
 
 
 ER_data[, c("sample_date", "replicate", "col_no") := tstrsplit(sample, "_")]
-ER_data$sample_date <- substr(ER_data$sample_date, 2, nchar(ER_data$sample_date))
 ER_data$sample_date <- factor(ER_data$sample_date,
                            levels = c("S09", "S13", "S16", "S19"),
                            labels = c("Day0", "Day3", "Day10", "Day17")) #Convert the sample date to days as a factor for ease in plotting
