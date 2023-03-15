@@ -27,15 +27,10 @@ theme_boxplot =  function() {
   }
 
 set_coloring_column = function(data) {
-  data$highlight = factor(ifelse(data$sample_date == "Day0" & data$col_no == "Col1", "before C1",
-                                 ifelse(data$sample_date == "Day0" & data$col_no == "Col2", "before C2",
-                                        ifelse(data$sample_date == "Day0" & data$col_no == "Col3", "before C3",
-                                               ifelse(data$sample_date != c("Day0") & data$col_no == "Col1", "after C1",
-                                                      ifelse(data$sample_date != c("Day0") & data$col_no == "Col2", "after C2",
-                                                             ifelse(data$sample_date != c("Day0") & data$col_no == "Col3", "after C3",
-                                                                    "Reservoirs")))))))
+  data$highlight = factor(paste0(ifelse(data$sample_date == "Day0", "before", "after"), " C", substr(data$col_no, 4, 4)))
   return(data)
 }
+
 
 
 fill_col_no = function() {

@@ -8,14 +8,15 @@ source("ExtracellularEnzymeActivity_Data_Prep/R/EEA.R") # Read the enzyme result
 
 
 ER_data[, c("sample_date", "replicate", "col_no") := tstrsplit(sample, "_")]
-ER_data$sample_date = factor(ER_data$sample_date,
+ER_data$sample_date <- substr(ER_data$sample_date, 2, nchar(ER_data$sample_date))
+ER_data$sample_date <- factor(ER_data$sample_date,
                            levels = c("S09", "S13", "S16", "S19"),
                            labels = c("Day0", "Day3", "Day10", "Day17")) #Convert the sample date to days as a factor for ease in plotting
-ER_data$col_no = factor(ER_data$col_no,
+ER_data$col_no <-factor(ER_data$col_no,
                                  levels = c("C1", "C2", "C3"),
                                  labels = c("Col1", "Col2", "Col3"))
 
-melted_ER = melt(ER_data, id.vars = c("sample", "sample_date", "col_no", "replicate"))
+melted_ER <- melt(ER_data, id.vars = c("sample", "sample_date", "col_no", "replicate"))
 
 # Overview of all the enzyme ratios
 ggplot(melted_ER) +
@@ -25,7 +26,7 @@ ggplot(melted_ER) +
   geom_hline(yintercept = c(0), color = "red", linetype = "dashed")
 
 # Individual enzyme ratio boxplots
-ER_data = set_coloring_column(ER_data)
+ER_data <- set_coloring_column(ER_data)
 
 # Xyloside/Glucosidase enzyme ratio
 ggplot(ER_data, mapping = aes(x = sample_date, y = xyl_gly.median)) +
@@ -92,7 +93,7 @@ ggplot(ER_data, mapping = aes(x = sample_date, y = nag_ldopa.median)) +
   ylab("Nag/L-DOPA")
 
 #Leucine aminopepdinase median
-ER_data = ER_data[calculate_median(Pep)[, c(1, 7)], on = .(sample = sample)]
+ER_data <- ER_data[calculate_median(Pep)[, c(1, 7)], on = .(sample = sample)]
 
 ggplot(ER_data, mapping = aes(x = sample_date, y = median)) +
   facet_grid(~col_no, labeller = as_labeller(col_names)) +
@@ -102,7 +103,7 @@ ggplot(ER_data, mapping = aes(x = sample_date, y = median)) +
   ylab("Pep")
 
 #L-DOPA median
-ER_data = ER_data[calculate_median(Ldopa)[, c(1, 7)], on = .(sample = sample)]
+ER_data <- ER_data[calculate_median(Ldopa)[, c(1, 7)], on = .(sample = sample)]
 
 ggplot(ER_data, mapping = aes(x = sample_date, y = median)) +
   facet_grid(~col_no, labeller = as_labeller(col_names)) +
@@ -114,21 +115,21 @@ ggplot(ER_data, mapping = aes(x = sample_date, y = median)) +
 
 
 # biplot
-DOC = fread("C:/Users/c7701233/Nextcloud/Column-Experiment/DOC_measurements/DOC_git/Expmeriment_DOC_dataprep/DOC_consumption.csv", sep = ",")
-DOC_consumed = melt(DOC[sample_date %in% c("S10", "S13", "S16", "S19")],
+DOC <- fread("C:/Users/c7701233/Nextcloud/Column-Experiment/DOC_measurements/DOC_git/Expmeriment_DOC_dataprep/DOC_consumption.csv", sep = ",")
+DOC_consumed <- melt(DOC[sample_date %in% c("S10", "S13", "S16", "S19")],
                     id.vars = c("replicate", "sample_date"),
                     measure.vars = c("C1consumed", "C2consumed", "C3consumed"))
 
-DOC_consumed$variable = factor(DOC_consumed$variable, 
+DOC_consumed$variable <- factor(DOC_consumed$variable, 
                                levels = c("C1consumed", "C2consumed", "C3consumed"),
                                labels = c("Col1", "Col2", "Col3"))
 
-DOC_consumed$sample_date = factor(DOC_consumed$sample_date,
+DOC_consumed$sample_date <- factor(DOC_consumed$sample_date,
                                levels = c("S10", "S13", "S16", "S19"),
                                labels = c("Day0", "Day3", "Day10", "Day17"))
-colnames(DOC_consumed) = c("replicate", "sample_date", "col_no", "DOC_consumed")
+colnames(DOC_consumed) <- c("replicate", "sample_date", "col_no", "DOC_consumed")
 
-ER_data = merge(ER_data, DOC_consumed, by.x = c("sample_date", "replicate", "col_no"),  by.y = c("sample_date", "replicate", "col_no"), all.x = TRUE)
+ER_data <- merge(ER_data, DOC_consumed, by.x = c("sample_date", "replicate", "col_no"),  by.y = c("sample_date", "replicate", "col_no"), all.x = TRUE)
 
 ggplot(ER_data, aes(x = pep_pho.median, y = glu_pep.median)) +
   geom_point(aes(color = DOC_consumed), size = 3) +
