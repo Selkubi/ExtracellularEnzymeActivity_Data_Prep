@@ -16,7 +16,8 @@ theme_boxplot <- theme_bw() +
       theme(axis.text = element_text(size = 12),
             axis.title = element_text(size = 12),
             text =  element_text(size = 12),
-            axis.text.x = element_text(size = 12))
+            axis.text.x = element_text(size = 12),
+  strip.background = element_blank())
 
 set_coloring_column <- function(data) {
   data$highlight = factor(paste0(ifelse(data$sample_date == "0", "before", "after"), " C", substr(data$col_no, 4, 4)))
@@ -51,3 +52,28 @@ fill_col_no2 <- scale_fill_manual(name = "Column Location",
 color_col_no2 <- scale_color_manual(name = "Column Location",
                       values = c("black", "black", "#1741a3", "#4e8fc8"),
                       guide = "legend")
+
+enzyme_ratio_names <- list(
+  "xyl_gly.median" = "Xyl / Glu",
+  "glu.xyl_cbh.median" = "Glu + Xyl/ Cbh",
+  "glu_pep.median" =  "Glu / Pep",
+  "pep_pho.median" = "Pep / Pho",
+  "glu_nag.median" = "Glu / NAG",
+  "glu_ldopa.median" = "glu / L-DOPA",
+  "cbh_ldopa.median" = "Cbh / L-DOPA",
+  "nag_ldopa.median" = "NAG / L-DOPA"
+)
+
+enzyme_labeller <- function(variable,value){
+  return(enzyme_ratio_names[value])
+}
+
+col_names <- c(
+  `Col1` = "Column 1",
+  `Col2` = "Column 2",
+  `Col3` = "Column 3"
+)
+
+column_labeller <- function(variable,value){
+  return(col_names[value])
+}

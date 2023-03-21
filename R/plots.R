@@ -9,19 +9,11 @@ source("R/EEA.R") # Read the enzyme results, calculate the means/medians and enz
 ER_data[, c("sample_date", "replicate", "col_no") := tstrsplit(sample, "_")]
 ER_data$sample_date <- factor(ER_data$sample_date,
                            levels = c("S09", "S13", "S16", "S19"),
-                           labels = c("0", "3", "10", "17")) #Convert the sample date to days as a factor for ease in plotting
+                           labels = c("0", "03", "10", "17")) #Convert the sample date to days as a factor for ease in plotting
 ER_data$col_no <-factor(ER_data$col_no,
                                  levels = c("C1", "C2", "C3"),
                                  labels = c("Col1", "Col2", "Col3"))
-
 melted_ER <- melt(ER_data, id.vars = c("sample", "sample_date", "col_no", "replicate"))
-
-# Overview of all the enzyme ratios
-ggplot(melted_ER) +
-  facet_wrap(~variable, scale = "free", nrow = 2) +
-  geom_boxplot(aes(x = as.factor(sample_date), y = (value), fill = as.factor(col_no))) +
-  color_selected + fill_selected + theme_boxplot +
-  geom_hline(yintercept = c(0), color = "red", linetype = "dashed")
 
 # Individual enzyme ratio boxplots
 ER_data <- set_coloring_column(ER_data)
@@ -96,8 +88,8 @@ ER_data <- ER_data[calculate_median(Pep)[, c(1, 7)], on = .(sample = sample)]
 ggplot(ER_data, mapping = aes(x = sample_date, y = median)) +
   facet_grid(~col_no, labeller = as_labeller(col_names)) +
   geom_boxplot(mapping = aes(fill = highlight, col = highlight)) +
-  fill_col_no() + color_col_no() +
-  theme_boxplot() + observation_numbers() +
+  fill_col_no + color_col_no +
+  theme_boxplot + observation_numbers +
   ylab("Pep") + xlab ("Days")
 
 #L-DOPA median
@@ -107,7 +99,31 @@ ggplot(ER_data, mapping = aes(x = sample_date, y = median)) +
   facet_grid(~col_no, labeller = as_labeller(col_names)) +
   geom_boxplot(mapping = aes(fill = highlight, col = highlight)) +
   fill_col_no + color_col_no +
-  theme_boxplot + observation_numbers() +
+  theme_boxplot + observation_numbers +
   ylab("L-DOPA") + xlab ("Days")
 
+# Enzyme ratio facet
+melted_ER <- set_coloring_column(melted_ER)
 
+# Overview of all the enzyme ratios
+ggplot(melted_ER) +
+  facet_grid(variable ~ col_no, scale = "free", labeller = labeller(variable = enzyme_labeller, col_no = column_labeller)) +
+  geom_boxplot(data = starter_community_C1, aes(starter, value, fill = highlight, color = highlight), width = 0.5) +
+  geom_boxplot(data = starter_community_C2, aes(starter, value, fill = highlight, color = highlight), width = 0.5) +
+  geom_boxplot(data = starter_community_C3, aes(starter, value, fill = highlight, color = highlight), width = 0.5) +
+  geom_boxplot(aes(x = as.factor(sample_date), y = (value), fill = highlight, color = highlight), width = 0.5) +
+  fill_col_no + color_col_no +
+  theme_boxplot +
+  geom_hline(yintercept = c(0), color = "red", linetype = "dashed") + xlab ("Day") + ylab (NULL)
+
+starter_community_C1 <- melted_ER[sample_date =="0" & col_no =="Col3"]
+starter_community_C1$starter <- as.factor("S")
+starter_community_C1$col_no <- "Col1"
+
+starter_community_C2 <- melted_ER[sample_date =="0" & col_no =="Col2"]
+starter_community_C2$starter <-  as.factor("S")
+starter_community_C2$col_no <- "Col2"
+
+starter_community_C3 <- melted_ER[sample_date =="0" & col_no =="Col1"]
+starter_community_C3$starter <-  as.factor("S")
+starter_community_C3$col_no <- "Col3"

@@ -74,7 +74,7 @@ ER_data = set_coloring_column(ER_data)
 ggplot(ER_data, mapping = aes(x = sample_date, y = xyl_gly.median)) +
   facet_grid(~col_no, labeller = as_labeller(col_names)) +
   geom_boxplot(mapping = aes(fill = highlight, col = highlight)) +
-  fill_col_no2() + color_col_no2() +
-  theme_boxplot() +
+  fill_col_no2 + color_col_no2 +
+  theme_boxplot +
   ylab("Xyl/Glu")
 ```
