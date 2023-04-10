@@ -17,7 +17,9 @@ theme_boxplot <- theme_bw() +
             axis.title = element_text(size = 12),
             text =  element_text(size = 12),
             axis.text.x = element_text(size = 12),
-  strip.background = element_blank())
+            strip.background = element_blank(),
+            panel.grid = element_blank(), 
+            strip.text = element_text(size = 12))
 
 set_coloring_column <- function(data) {
   data$highlight = factor(paste0(ifelse(data$sample_date == "0", "before", "after"), " C", substr(data$col_no, 4, 4)))
