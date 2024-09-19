@@ -5,6 +5,8 @@ source("R/functions.R")
 source("R/plotting_functions.R")
 source("R/EEA.R") # Read the enzyme results, calculate the means/medians and enzyme ratios
 
+if(!dir.exists("output/plots")) {dir.create("output/plots")}
+
 # Set the factor names for plotting
 ER_data[, c("sample_date", "replicate", "col_no") := tstrsplit(sample, "_")]
 ER_data$sample_date <- factor(ER_data$sample_date,
@@ -127,3 +129,27 @@ starter_community_C2$col_no <- "Col2"
 starter_community_C3 <- melted_ER[sample_date =="0" & col_no =="Col1"]
 starter_community_C3$starter <-  as.factor("S")
 starter_community_C3$col_no <- "Col3"
+
+
+# Plot: Replicate chains as lines
+data <- melted_ER
+ribbon_info <- data[,.(max = max(value), min = min(value), mean = mean(value), median = median(value)), by = .(sample_date, col_no, variable)]
+
+enzme_ratios <- ggplot(data, aes(x = col_no, y = value)) +
+  facet_wrap(~variable, scales = "free_y", nrow = 4, labeller = labeller(variable = enzyme_labeller), strip.position = "left") +
+  geom_ribbon(data = ribbon_info, aes(x = col_no, y = mean, group = sample_date,
+                  ymin = min, 
+                  ymax = max, fill = sample_date), alpha = 0.01) +
+  geom_point(aes(color = sample_date, group = replicate), size = 0.5) + 
+  geom_line(aes(group = replicate, color = sample_date), alpha = 0.5) +
+  geom_line(data = ribbon_info, aes(x = col_no, y = median, group = sample_date, color = sample_date), linewidth = 2) + 
+  fill_sample_date() + color_sample_date() +
+  scale_x_discrete(expand = c(0.05, 0.05), labels = column_labeller) +
+  scale_y_continuous(breaks = scales::pretty_breaks(7)) +
+  theme_boxplot()
+
+pdf('output/plots/enzyme_ratios.pdf', width = 5, height = 10)
+plot(enzme_ratios)
+dev.off()
+              
+              

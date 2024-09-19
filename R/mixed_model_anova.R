@@ -42,18 +42,7 @@ ggplot()+
   geom_point(aes(x=ER_data$position, y=F0))
 
 ### Following ch6: Random and mixed effects models
-m1 <- lmer(xyl_gly.median ~  (1 | chainID), data = ER_data)  
-summary(m1)
-var_from_chain_ID
-summary(m1)
 
-confint(m1, oldNames = FALSE)
-
-options(contrasts = c("contr.sum", "contr.poly"))
-m1.aov <- anova(fm03)
-confint(m1.aov)
-
-ranef(fm03)
 # Check the model assumtions with the following plots 
 plot(fm03) # TA plot
 
@@ -67,3 +56,11 @@ par(mfrow = c(1, 1))
 with(ER_data, interaction.plot(x.factor = position, 
                                trace.factor = chainID, 
                                response = xyl_gly.median))
+ggplot(ER_data, aes(x = position, y = xyl_gly.median, group = chainID, col = chainID)) + 
+  geom_point() + stat_summary(fun = mean, geom = "line") + theme_bw()
+
+# To get the p value for the mixed effects etc, use the lmerTest package (which also uses lmer but adds some stats)
+fm04 <- lmerTest::lmer(xyl_gly.median ~  day * position + (1 | chainID), data = ER_data)
+summary(fm04)
+anova(fm04)
+fixef(fm04)
