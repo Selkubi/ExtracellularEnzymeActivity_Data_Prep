@@ -2,6 +2,7 @@
 #'
 #' This function converts the first five columns of a data table to numeric type.
 #'
+#' @import data.table
 #' @param x A data table containing at least five columns.
 #'
 #' @return The modified data table with the first five columns converted to numeric.
@@ -14,9 +15,6 @@
 #' # result <- convert_to_numeric(dt)
 #' # print(result)
 convert_to_numeric <- function(x) {
-  x[, `:=`(V1 = as.numeric(V1),
-           V2 = as.numeric(V2),
-           V3 = as.numeric(V3),
-           V4 = as.numeric(V4),
-           V5 = as.numeric(V5))]
+  x[, c("V1", "V2", "V3", "V4", "V5") := lapply(.SD, as.numeric), .SDcols = c("V1", "V2", "V3", "V4", "V5")]
+  return(x)
 }

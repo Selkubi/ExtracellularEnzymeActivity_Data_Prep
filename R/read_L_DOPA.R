@@ -1,6 +1,7 @@
 
 #' Filter Positive L-DOPA Measurements Based on Abiotic Correction
 #' This function takes a data frame of L-DOPA measurements and returns only the positive values, applying a threshold of zero. Negative values are replaced with `NA`. It assumes that the first five columns contain the relevant measurements.
+#' @import data.table
 #'
 #' @param data A data frame containing L-DOPA measurements. The first five columns are expected to contain the replicate data.
 #'
@@ -37,7 +38,7 @@ return_positive_ldopa <- function(data) {
 #'
 #' @examples read_L_DOPA("data.xlsx", cells = "Z114:AD114")
 read_L_DOPA <- function(df, cells = "Z114:AD114") {
-  measurement = read_excel(df,  range = cells,  col_names = paste0("rep", seq_along(1:5)))
+  measurement = readxl::read_excel(df,  range = cells,  col_names = paste0("rep", seq_along(1:5)))
   final = return_positive_ldopa(measurement)
   return(final)
 }

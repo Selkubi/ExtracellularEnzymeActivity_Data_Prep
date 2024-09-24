@@ -4,10 +4,13 @@
 \alias{calculate_enzyme_ratios}
 \title{Calculate Enzyme Activity Ratios}
 \usage{
-calculate_enzyme_ratios(x)
+calculate_enzyme_ratios(x, column_name = "median")
 }
 \arguments{
 \item{x}{A list of data frames, where each data frame corresponds to an enzyme's measurements. Each data frame should contain a "sample" column for sample identifiers and a "median" column with median enzyme activity values for each sample. The enzyme data frames should include: Gly, Xyl, Cbh, Pep, Pho, NAG, and L-DOPA.}
+
+\item{column_name}{A character string specifying which column to use for
+calculations. The default is "median". Acceptable values are "median" or "mean".}
 }
 \value{
 A data table with the following calculated enzyme activity ratios for each sample:
@@ -23,7 +26,7 @@ A data table with the following calculated enzyme activity ratios for each sampl
 }
 }
 \description{
-This function computes a variety of enzyme activity ratios from a given data set containing median values of different enzyme activities. It returns a data table with the calculated ratios for each sample, including:
+This function computes a variety of enzyme activity ratios from a given data set containing median or mean values of different enzyme activities. It returns a data table with the calculated ratios for each sample, including:
 \itemize{
 \item Xylanase/Glucuronidase (Xyl/Gly)
 \item (Glucuronidase + Xylanase) / Cellobiohydrolase (Gly + Xyl / Cbh)

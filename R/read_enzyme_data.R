@@ -13,7 +13,7 @@
 #' # Example usage:
 #' # read_glu("enzyme_data.xlsx")
 read_glu <- function(df) {
-  measurement = read_xlsx(df,  range = anchored(anchor = "Z51", dim = c(2L, 5L), input = NULL, col_names = NULL,
+  measurement = readxl::read_xlsx(df,  range = readxl::anchored(anchor = "Z51", dim = c(2L, 5L), input = NULL, col_names = NULL,
                                                 byrow = FALSE),  col_names = paste0("rep", seq_along(1:5)))
   final = read_positive_cells(measurement)
   return(final)
@@ -33,7 +33,7 @@ read_glu <- function(df) {
 #' # Example usage:
 #' # read_xyl("enzyme_data.xlsx")
 read_xyl <- function(df) {
-  measurement = read_xlsx(df,  range = anchored(anchor = "Z57", dim = c(2L, 5L), input = NULL, col_names = NULL,
+  measurement = readxl::read_xlsx(df,  range = readxl::anchored(anchor = "Z57", dim = c(2L, 5L), input = NULL, col_names = NULL,
                                                 byrow = FALSE),  col_names = paste0("rep", seq_along(1:5)))
   final = read_positive_cells(measurement)
   return(final)
@@ -54,7 +54,7 @@ read_xyl <- function(df) {
 #' # Example usage:
 #' # read_NAG("enzyme_data.xlsx")
 read_NAG <- function(df) {
-  measurement = read_xlsx(df,  range = anchored(anchor = "Z63", dim = c(2L, 5L), input = NULL, col_names = NULL,
+  measurement = readxl::read_xlsx(df,  range = readxl::anchored(anchor = "Z63", dim = c(2L, 5L), input = NULL, col_names = NULL,
                                                 byrow = FALSE),  col_names = paste0("rep", seq_along(1:5)))
   final = read_positive_cells(measurement)
   return(final)
@@ -74,7 +74,7 @@ read_NAG <- function(df) {
 #' # Example usage:
 #' # read_Pho("enzyme_data.xlsx")
 read_Pho <- function(df) {
-  measurement = read_xlsx(df,  range = anchored(anchor = "Z69", dim = c(2L, 5L), input = NULL, col_names = NULL,
+  measurement = readxl::read_xlsx(df,  range = readxl::anchored(anchor = "Z69", dim = c(2L, 5L), input = NULL, col_names = NULL,
                                                 byrow = FALSE),  col_names = paste0("rep", seq_along(1:5)))
   final = read_positive_cells(measurement)
   return(final)
@@ -94,7 +94,7 @@ read_Pho <- function(df) {
 #' # Example usage:
 #' # read_Cbh("enzyme_data.xlsx")
 read_Cbh <- function(df) {
-  measurement = read_xlsx(df,  range = anchored(anchor = "Z75", dim = c(2L, 5L), input = NULL, col_names = NULL,
+  measurement = readxl::read_xlsx(df,  range = readxl::anchored(anchor = "Z75", dim = c(2L, 5L), input = NULL, col_names = NULL,
                                                 byrow = FALSE),  col_names = paste0("rep", seq_along(1:5)))
   final = read_positive_cells(measurement)
   return(final)
@@ -114,7 +114,7 @@ read_Cbh <- function(df) {
 #' # Example usage:
 #' # read_Pep("enzyme_data.xlsx")
 read_Pep <- function(df) {
-  measurement = read_xlsx(df,  range = anchored(anchor = "Z83", dim = c(2L, 5L), input = NULL,
+  measurement = readxl::read_xlsx(df,  range = readxl::anchored(anchor = "Z83", dim = c(2L, 5L), input = NULL,
                                                 byrow = FALSE),  col_names = paste0("rep", seq_along(1:5)))
   final = read_positive_cells(measurement)
   return(final)

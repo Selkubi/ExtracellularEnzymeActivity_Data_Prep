@@ -23,7 +23,7 @@ name_change <- function(x) {
 #' @examples  Gly <- enzyme_as_data_table(paths, func = read_glu)
 
 enzyme_as_data_table <- function(x, func, ...) {
-  df = as.data.table(t(mapply(x, FUN = func, USE.NAMES = TRUE)), keep.rownames = "sample")
+  df = data.table::as.data.table(t(mapply(x, FUN = func, USE.NAMES = TRUE)), keep.rownames = "sample")
   df$sample = name_change(df)
   return(df)
 }

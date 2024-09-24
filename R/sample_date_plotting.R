@@ -17,13 +17,13 @@
 #'   geom_line() +
 #'   color_sample_date()
 fill_sample_date <- function() {
-  scale_fill_manual(name =  "Sampling Date",
+  ggplot2::scale_fill_manual(name =  "Sampling Date",
                     values = c("#b7cdb8", "#e7dff1", "#c9bbd8", "#ac98c1"),
                     guide = "legend")
 }
 
 color_sample_date <- function() {
-  scale_color_manual(name =  "Sampling Date",
+  ggplot2::scale_color_manual(name =  "Sampling Date",
                      values = c("#b7cdb8", "#e7dff1", "#c9bbd8", "#ac98c1"),
                      guide = "legend")
 }

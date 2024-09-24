@@ -12,7 +12,7 @@
 #'   geom_bar(position = "dodge") +
 #'   fill_col_no()
 fill_col_no <- function() {
-  scale_fill_manual(name =  "Column Location",
+  ggplot2::scale_fill_manual(name =  "Column Location",
                     values = c("#1741a3", "#4e8fc8", "#a698cc", "white", "white", "white"),
                     guide = "legend")
 }
@@ -31,7 +31,7 @@ fill_col_no <- function() {
 #'   geom_line() +
 #'   color_col_no()
 color_col_no <- function() {
-  scale_color_manual(name =  "Column Location",
+  ggplot2::scale_color_manual(name =  "Column Location",
                      values = c("black", "black", "black", "#1741a3", "#4e8fc8", "#a698cc"),
                      guide = "legend")
 }

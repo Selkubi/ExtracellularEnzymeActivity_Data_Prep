@@ -19,6 +19,6 @@
 #' # result <- calculate_mean(df)
 #' # print(result)
 calculate_mean <- function(x) {
-  x$median = apply(x[, -1], 1, mean, na.rm = TRUE, trim = 0.25)
+  x$mean = apply(x[, -1], 1, mean, na.rm = TRUE, trim = 0.25)
   return(x)
 }
