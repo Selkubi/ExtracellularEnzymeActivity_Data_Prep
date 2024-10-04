@@ -12,16 +12,22 @@
 #' ggplot(mtcars, aes(factor(cyl), mpg)) +
 #'   geom_boxplot() +
 #'   theme_boxplot()
-theme_boxplot <-  function() {
-  ggplot2::theme(panel.background = element_rect(fill = NA),
-                 panel.grid = element_blank(),
-                 strip.background = element_blank(),
-                 strip.text = element_text(size = 11, color = "black"),
-                 strip.placement = "outside") +
-    ggplot2::theme(text = element_text(size = 11),
-                   axis.line.x = element_line(color = "black"),
-                   axis.line.y = element_line(),
-                   axis.text = element_text(size = 11, color = "black"),
-                   axis.title = element_blank(),
-                   legend.position = "bottom")
+theme_boxplot <- function() {
+  ggplot2::theme_bw() +
+    ggplot2::theme(
+      text = ggplot2::element_text(size = 11),
+      axis.title = ggplot2::element_text(size = 11),
+      axis.text.x = ggplot2::element_text(color = "black"),
+      axis.text.y = element_blank(),
+      legend.position = "bottom",
+      strip.placement ="outside",
+      strip.background = ggplot2::element_blank(),
+      strip.text = element_text(size = 11, color = "black"),
+      axis.line =  ggplot2::element_line(color = "black"),
+      panel.border = ggplot2::element_blank(),
+      axis.line.y.right = ggplot2::element_line(color = "black"),
+      panel.grid = ggplot2::element_blank())
 }
+
+
+panel.background = element_rect(fill = NA),
