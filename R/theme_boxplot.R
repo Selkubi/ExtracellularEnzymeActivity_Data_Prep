@@ -28,6 +28,3 @@ theme_boxplot <- function() {
       axis.line.y.right = ggplot2::element_line(color = "black"),
       panel.grid = ggplot2::element_blank())
 }
-
-
-panel.background = element_rect(fill = NA),

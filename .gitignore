@@ -5,3 +5,4 @@
 *.html
 data/*
 output/*
+analysis/mixed_models_book_notes.R
