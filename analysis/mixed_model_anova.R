@@ -44,14 +44,18 @@ fm <- lapply(names(ER_data)[2:9], function(colname) {
 })
 names(fm) <- names(ER_data)[2:9]
 
+# Get the day comparison for each column for each enzyme
 posthoc_spesific_position <- list()
+pairwise_comparisons <- list()
 for (i in seq_along(fm)) {
   posthoc_spesific_position[[names(fm)[i]]] <- emmeans(fm[[i]][[1]], ~ day | position)
+  pairwise_comparisons[[names(fm)[i]]] <- contrast(posthoc_spesific_position[[i]], method = "pairwise", adjust = "tukey")
 }
 
-pairwise_comparisons <- contrast(posthoc_spesific_position, method = "pairwise", adjust = "tukey")
-summary(pairwise_comparisons)
+# Get the day spesific comparisons where each day is compared only to S09
+control_comparisons <- list()
+for(i in seq_along(fm)){
+  control_comparisons[[names(fm)[i]]] <- contrast(posthoc_spesific_position[[i]], "trt.vs.ctrl", ref = "S09")
+}
 
-control_comparisons <- contrast(posthoc_spesific_position, "trt.vs.ctrl", ref = "S09")
-summary(control_comparisons)
 

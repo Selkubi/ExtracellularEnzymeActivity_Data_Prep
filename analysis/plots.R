@@ -166,3 +166,8 @@ ggplot(data[variable == "xyl_gly.median"], aes(x = col_no, y = value)) +
   scale_y_continuous(breaks = scales::pretty_breaks(4)) +
   theme_boxplot()
 
+ggplot(data[variable == "xyl_gly.median"], aes(x = col_no, y = value)) +
+  geom_boxplot(aes(fill = sample_date), size = 0.5) +
+  fill_sample_date() + color_sample_date() +
+  scale_x_discrete(labels = column_labeller()) +
+  theme_boxplot()
