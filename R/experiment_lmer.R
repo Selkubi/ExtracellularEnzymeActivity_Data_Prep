@@ -2,7 +2,7 @@
 #'
 #' This function fits a linear mixed-effects model using the `lmer` function from the `lme4` package. It allows for flexible specification of the response variable, fixed effect, random effect, and interaction terms. The formula is dynamically generated based on the provided inputs.
 #'
-#' @param x A numeric vector or column from the data representing the response variable (e.g., `xyl_gly.median`).
+#' @param response_col A numeric vector or column from the data representing the response variable (e.g., `xyl_gly.median`).
 #' @param y A factor or numeric column from the data representing the main fixed effect (e.g., `day`).
 #' @param fixed_factor A factor or numeric column representing an additional fixed effect for interaction (e.g., `position`).
 #' @param random_factor A factor or grouping variable representing the random effect (e.g., `chainID`).
@@ -19,10 +19,9 @@
 #'
 #' @import lme4
 #' @export
-experiment_lmer <- function(x, y, fixed_factor, random_factor, data) {
-  # Construct the formula dynamically
-  formula <- as.formula(paste(deparse(substitute(x)), "~", deparse(substitute(y)), "*",
-                              deparse(substitute(fixed_factor)), "+ (1 |", deparse(substitute(random_factor)), ")"))
+experiment_lmer <- function(response_col, y, fixed_factor, random_factor, data) {
+  # Construct the formula dynamically using the column name
+  formula <- as.formula(paste(response_col, "~", y, "*", fixed_factor, "+ (1 |", random_factor, ")"))
 
   # Fit the model using lmer
   lmer(formula, data = data)
