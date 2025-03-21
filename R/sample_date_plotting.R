@@ -27,3 +27,16 @@ color_sample_date <- function() {
                      values = c("#b7cdb8", "#e7dff1", "#c9bbd8", "#ac98c1"),
                      guide = "legend")
 }
+
+fill_sample_date_no_zero <- function() {
+  ggplot2::scale_fill_manual(name =  "Sampling Date",
+                             values = c("#e7dff1", "#c9bbd8", "#ac98c1"),
+                             guide = "legend")
+}
+
+color_sample_date_no_zero <- function() {
+  ggplot2::scale_color_manual(name =  "Sampling Date",
+                              values = c("#e7dff1", "#c9bbd8", "#ac98c1"),
+                              guide = "legend")
+}
+

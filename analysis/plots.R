@@ -1,5 +1,6 @@
 library(data.table)
 library(ggplot2)
+library(dplyr)
 
 #source("R/functions.R")
 #source("R/plotting_functions.R")
@@ -20,116 +21,51 @@ melted_ER <- melt(ER_data, id.vars = c("sample", "sample_date", "col_no", "repli
 # Individual enzyme ratio boxplots
 ER_data <- set_coloring_column(ER_data)
 
-# Xyloside/Glucosidase enzyme ratio
-ggplot(ER_data, mapping = aes(x = sample_date, y = xyl_gly.median)) +
-  facet_grid(~col_no, labeller = as_labeller(col_names)) +
-  geom_boxplot(mapping = aes(fill = highlight, col = highlight)) +
-  fill_col_no() + color_col_no() +
-  theme_boxplot() + observation_numbers() +
-  ylab("Xyl/Glu") + xlab("Days")
-
-#glu.xyl_cbh.median
-ggplot(ER_data, mapping = aes(x = sample_date, y = glu.xyl_cbh.mean)) +
-  facet_grid(~col_no, labeller = as_labeller(col_names)) +
-  geom_boxplot(mapping = aes(fill = highlight, col = highlight)) +
-  fill_col_no() + color_col_no() +
-  theme_boxplot() + observation_numbers() +
-  ylab("Glu+Xyl/Cbh") + xlab("Days")
-
-#glu_pep.median
-ggplot(ER_data, mapping = aes(x = sample_date, y = glu_pep.mean)) +
-  facet_grid(~col_no, labeller = as_labeller(col_names)) +
-  geom_boxplot(mapping = aes(fill = highlight, col = highlight)) +
-  fill_col_no() + color_col_no() +
-  theme_boxplot() + observation_numbers() +
-  ylab("Glu/Pep") + xlab("Days")
-
-#pep_pho.median
-ggplot(ER_data, mapping = aes(x = sample_date, y = pep_pho.mean)) +
-  facet_grid(~col_no, labeller = as_labeller(col_names)) +
-  geom_boxplot(mapping = aes(fill = highlight, col = highlight)) +
-  fill_col_no() + color_col_no() +
-  theme_boxplot() + observation_numbers() +
-  ylab("Pep/Phosph") + xlab("Days")
-
-#glu_nag.median
-ggplot(ER_data, mapping = aes(x = sample_date, y = glu_nag.mean)) +
-  facet_grid(~col_no, labeller = as_labeller(col_names)) +
-  geom_boxplot(mapping = aes(fill = highlight, col = highlight)) +
-  fill_col_no() + color_col_no() +
-  theme_boxplot() + observation_numbers() +
-  ylab("Glu/Nag") + xlab("Days")
-
-#glu_ldopa.median
-ggplot(ER_data, mapping = aes(x = sample_date, y = glu_ldopa.mean)) +
-  facet_grid(~col_no, labeller = as_labeller(col_names)) +
-  geom_boxplot(mapping = aes(fill = highlight, col = highlight)) +
-  fill_col_no() + color_col_no() +
-  theme_boxplot() + observation_numbers() +
-  ylab("Glu/L-DOPA") + xlab ("Days")
-
-#cbh_ldopa.median
-ggplot(ER_data, mapping = aes(x = sample_date, y = cbh_ldopa.mean)) +
-  facet_grid(~col_no, labeller = as_labeller(col_names)) +
-  geom_boxplot(mapping = aes(fill = highlight, col = highlight)) +
-  fill_col_no() + color_col_no() +
-  theme_boxplot() + observation_numbers() +
-  ylab("Cbh/L-DOPA") + xlab("Days")
-
-#nag_ldopa.median
-ggplot(ER_data, mapping = aes(x = sample_date, y = nag_ldopa.mean)) +
-  facet_grid(~col_no, labeller = as_labeller(col_names)) +
-  geom_boxplot(mapping = aes(fill = highlight, col = highlight)) +
-  fill_col_no() + color_col_no() +
-  theme_boxplot() + observation_numbers() +
-  ylab("Nag/L-DOPA") + xlab("Days")
-
-#Leucine aminopepdinase median
-ER_data <- ER_data[calculate_mean(Pep)[, c(1, 7)], on = .(sample = sample)]
-
-ggplot(ER_data, mapping = aes(x = sample_date, y = mean)) +
-  facet_grid(~col_no, labeller = as_labeller(col_names)) +
-  geom_boxplot(mapping = aes(fill = highlight, col = highlight)) +
-  fill_col_no() + color_col_no() +
-  theme_boxplot() + observation_numbers() +
-  ylab("Pep") + xlab("Days")
-
-#L-DOPA median
-ER_data <- ER_data[calculate_mean(Ldopa)[, c(1, 7)], on = .(sample = sample)]
-
-ggplot(ER_data, mapping = aes(x = sample_date, y = mean)) +
-  facet_grid(~col_no, labeller = as_labeller(col_names)) +
-  geom_boxplot(mapping = aes(fill = highlight, col = highlight)) +
-  fill_col_no() + color_col_no() +
-  theme_boxplot() + observation_numbers() +
-  ylab("L-DOPA") + xlab("Days")
-
 # Enzyme ratio facet
 melted_ER <- set_coloring_column(melted_ER)
 
 # Overview of all the enzyme ratios
-starter_community_C1 <- melted_ER[sample_date =="0" & col_no =="Col3"]
-starter_community_C1$starter <- as.factor("S")
-starter_community_C1$col_no <- "Col1"
-
-starter_community_C2 <- melted_ER[sample_date =="0" & col_no =="Col2"]
-starter_community_C2$starter <-  as.factor("S")
-starter_community_C2$col_no <- "Col2"
-
-starter_community_C3 <- melted_ER[sample_date =="0" & col_no =="Col1"]
-starter_community_C3$starter <-  as.factor("S")
-starter_community_C3$col_no <- "Col3"
-
 ggplot(melted_ER) +
   facet_grid(variable ~ col_no, scale = "free", labeller = labeller(variable = enzyme_labeller(), col_no = column_labeller())) +
-  geom_boxplot(data = starter_community_C1, aes(starter, value, fill = highlight, color = highlight), width = 0.5) +
-  geom_boxplot(data = starter_community_C2, aes(starter, value, fill = highlight, color = highlight), width = 0.5) +
-  geom_boxplot(data = starter_community_C3, aes(starter, value, fill = highlight, color = highlight), width = 0.5) +
   geom_boxplot(aes(x = as.factor(sample_date), y = (value), fill = highlight, color = highlight), width = 0.5) +
   fill_col_no() + color_col_no() +
   theme_boxplot() + theme(legend.position = "right", axis.line.y.right = element_line()) +
   geom_hline(yintercept = c(0), color = "red", linetype = "dashed") + xlab ("Day") + ylab (NULL)
 
+# Enzyme Ratio plots with log ratio of day0 to other days
+
+summarized_data  <- ER_data |>
+  group_by(sample_date, col_no) |>
+  summarise(across(where(is.numeric), mean, na.rm = TRUE))
+
+sample_date_0  <- summarized_data |>
+  ungroup() |>
+  filter(sample_date == '0') |>
+  select(-sample_date)
+
+date_0_ratios <- ER_data %>%
+  mutate(across(where(is.numeric), ~ . / sample_date_0[[cur_column()]][match(col_no, sample_date_0$col_no)], .names = "ratio_{col}")) |>
+  ungroup() %>%
+  select(sample_date, col_no, starts_with("ratio_"))
+
+# After checking if the day0 values are all equals to 1, convert to a melted table
+data <-  date_0_ratios |>
+  tidyr::pivot_longer(
+    cols = starts_with("ratio_"),
+    names_to = "variable",
+    values_to = "value"
+  ) |>
+  filter(sample_date != 0)
+
+log_ratio_boxplots <- ggplot(data) +
+  facet_grid(variable ~ col_no, scale = "free", labeller = labeller(variable = enzyme_labeller2, col_no = column_labeller())) +
+  geom_boxplot(mapping = aes(x = sample_date, y = log(value), group = sample_date, fill = sample_date)) +
+  fill_sample_date_no_zero() +
+  theme_boxplot() + xlab("Days") + ylab("log ratio of dayX:day0")
+
+pdf('output/plots/log_ratio_enzyme_ratios.pdf', width = 5, height = 8)
+plot(log_ratio_boxplots)
+dev.off()
 
 # Plot: Replicate chains as lines
 data <- melted_ER
