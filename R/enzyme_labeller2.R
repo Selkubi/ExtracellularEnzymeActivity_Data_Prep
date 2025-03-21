@@ -1,4 +1,4 @@
-#' Enzyme Ratio Names and Labeller
+#' Enzyme Ratio Names and Labeller for the log ratios
 #'
 #' These functions handle enzyme ratio names and label them in a format suitable for `ggplot2` visualizations.
 #' The `enzyme_ratio_names` list defines a set of common enzyme ratios and their corresponding display names.
@@ -20,17 +20,17 @@
 #' ggplot(mtcars, aes(factor(cyl), mpg)) +
 #'   geom_boxplot() +
 #'   facet_wrap(~gear, labeller = enzyme_labeller)
-enzyme_ratio_names <- list(
-  "xyl_gly.median"  = "Xyl / Glu",
-  "glu.xyl_cbh.median" = "Glu + Xyl / Cbh",
-  "glu_pep.median" =  "Glu / Pep",
-  "pep_pho.median" = "Pep / Pho",
-  "glu_nag.median" = "Glu / NAG",
-  "glu_ldopa.median" = "Glu / L-DOPA",
-  "cbh_ldopa.median" = "Cbh / L-DOPA",
-  "nag_ldopa.median" = "NAG / L-DOPA"
+enzyme_ratio_names2 <- list(
+  "ratio_xyl_gly.median"  = "Xyl / Glu",
+  "ratio_glu.xyl_cbh.median" = "Glu + Xyl / \n Cbh",
+  "ratio_glu_pep.median" =  "Glu / Pep",
+  "ratio_pep_pho.median" = "Pep / Pho",
+  "ratio_glu_nag.median" = "Glu / NAG",
+  "ratio_glu_ldopa.median" = "Glu /\n L-DOPA",
+  "ratio_cbh_ldopa.median" = "Cbh /\n L-DOPA",
+  "ratio_nag_ldopa.median" = "NAG /\n L-DOPA"
 )
 
-enzyme_labeller <- function(variable, value) {
-  return(enzyme_ratio_names[value])
+enzyme_labeller2 <- function(variable, value) {
+  return(enzyme_ratio_names2[value])
 }

@@ -31,3 +31,20 @@ is.nan.data.frame <- function(x) {
 is.inf.data.frame <- function(x) {
   do.call(cbind, lapply(x, is.infinite))
 }
+
+#' Check for Zero Values in a Data Frame
+#'
+#' This function checks each element of a data frame to determine if it is zero.
+#' It returns a logical data frame of the same dimensions, where `TRUE` indicates the presence of zero values and `FALSE` indicates the absence of them.
+#'
+#' @param x A data frame to be checked for zero values.
+#' @return A logical data frame where each element is `TRUE` if the corresponding element in `x` is zero, and `FALSE` otherwise.
+#'
+#' @examples
+#' df <- data.frame(a = c(1, 0, -3), b = c(3, 2, 0))
+#' is.zero.data.frame(df)
+#'
+
+is.zero.data.frame <- function(x) {
+  do.call(cbind, lapply(x, function(col) col == 0))
+}
