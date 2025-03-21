@@ -19,9 +19,10 @@
 #'
 #' @import lme4
 #' @export
-experiment_lmer <- function(response_col, y, fixed_factor, random_factor, data) {
-  # Construct the formula dynamically using the column name
-  formula <- as.formula(paste(response_col, "~", y, "*", fixed_factor, "+ (1 |", random_factor, ")"))
+experiment_lmer <- function(x, y, fixed_factor, random_factor, data) {
+  # Construct the formula dynamically
+  formula <- as.formula(paste(deparse(substitute(x)), "~", deparse(substitute(y)), "*",
+                              deparse(substitute(fixed_factor)), "+ (1 |", deparse(substitute(random_factor)), ")"))
 
   # Fit the model using lmer
   lmer(formula, data = data)
