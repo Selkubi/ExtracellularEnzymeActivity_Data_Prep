@@ -1,5 +1,5 @@
-source("analysis/EEA.R")
-library(lme4)
+source("analysis/01_EEA_data_import.R")
+#library(lme4)
 library(emmeans)
 
 ER_data[, c("day", "chainID", "position") := tstrsplit(ER_data$sample, "_")]
@@ -31,7 +31,7 @@ par(mfrow = c(1, 1))
 fm04 <- lmer(xyl_gly.median ~ day * position + (1 | chainID), data = ER_data)
 summary(fm04)
 
-experiment_lmer("glu.xyl_cbh.median", "day", fixed_factor = "position", random_factor = "chainID", data = ER_data)
+experiment_lmer("xyl_gly.median", "day", fixed_factor = "position", random_factor = "chainID", data = ER_data)
 
 fm <-list()
 # Apply experiment_lmer to columns 2 to 9 in ER_data

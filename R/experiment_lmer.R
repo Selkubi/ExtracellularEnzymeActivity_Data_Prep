@@ -17,12 +17,15 @@
 #' fit <- experiment_lmer(xyl_gly.median, day, fixed_factor = position, random_factor = chainID, data = ER_data)
 #' summary(fit)
 #'
-#' @import lme4
+#'
 #' @export
 experiment_lmer <- function(response_col, y, fixed_factor, random_factor, data) {
   # Construct the formula dynamically using the column name
-  formula <- as.formula(paste(response_col, "~", y, "*", fixed_factor, "+ (1 |", random_factor, ")"))
+formula <- as.formula(paste(response_col, "~", y, "*", fixed_factor))
+random_formula <- as.formula(paste("~ 1 | ", random_factor))
 
-  # Fit the model using lmer
-  lmer(formula, data = data)
+
+nlme::lme(formula,
+  random = random_formula,
+  data = data)
 }
