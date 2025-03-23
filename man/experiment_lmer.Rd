@@ -31,4 +31,5 @@ The function constructs a formula dynamically in the form of \code{response ~ y 
 fit <- experiment_lmer(xyl_gly.median, day, fixed_factor = position, random_factor = chainID, data = ER_data)
 summary(fit)
 
+
 }
