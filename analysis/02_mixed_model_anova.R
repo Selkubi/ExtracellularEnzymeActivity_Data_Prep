@@ -1,6 +1,7 @@
 source("analysis/01_EEA_data_import.R")
 #library(lme4)
 library(emmeans)
+library(lmerTest)
 
 ER_data[, c("day", "chainID", "position") := tstrsplit(ER_data$sample, "_")]
 ER_data[, "columnID" := c(1:nrow(ER_data))]
@@ -28,10 +29,15 @@ par(mfrow = c(1, 1))
 
 # The distribuitions looks fine with a couple point exceptions (and the Na values)
 # To get the p value for the mixed effects etc, use the lmerTest package (which also uses lmer but adds some stats)
-fm04 <- lmer(xyl_gly.median ~ day * position + (1 | chainID), data = ER_data)
+fm04 <- experiment_lmer("xyl_gly.median", "day", fixed_factor = "position", random_factor = "chainID", data = ER_data)
 summary(fm04)
+pairwise_comparisons <- time_comparison(fm04)
 
-experiment_lmer("xyl_gly.median", "day", fixed_factor = "position", random_factor = "chainID", data = ER_data)
+
+#contrast for days
+posthoc_spesific_position <- emmeans(fm04, ~ position | day)
+pairwise_comparisons <- contrast(posthoc_spesific_position, method = "pairwise", adjust = "tukey")
+
 
 fm <-list()
 # Apply experiment_lmer to columns 2 to 9 in ER_data
