@@ -76,7 +76,7 @@ log_ratio_boxplots <- ggplot(data = ribbon_info, mapping = aes(x = sample_date, 
   geom_line(mapping = aes(y = mean), linewidth = 1.2) +
   theme_boxplot() + xlab("Days") + ylab("log ratio of dayX:day0") +
   color_column() +
-  theme(legend.position = "left")
+  theme(legend.position = "bottom")
 
 pdf('output/plots/log_ratio_enzyme_ratios.pdf', width = 5, height = 8)
 plot(log_ratio_boxplots)
@@ -85,7 +85,7 @@ dev.off()
 # Plot: Replicate chains as lines
 
 enzme_ratios <- ggplot(data, aes(x = col_no, y = log_ratio, color = sample_date, group = sample_date)) +
-  facet_wrap(~variable, scales = "free_y", nrow = 4, labeller = labeller(variable = enzyme_labeller),
+  facet_wrap(~variable, scales = "free", nrow = 4, labeller = labeller(variable = enzyme_labeller),
              strip.position = "left", axes = "all", axis.labels = "all_y") +
   geom_point(size = 1.5) +
   geom_line(data = ribbon_info, aes(y = mean), linewidth = 2) +
@@ -94,7 +94,7 @@ enzme_ratios <- ggplot(data, aes(x = col_no, y = log_ratio, color = sample_date,
   scale_y_continuous(breaks = scales::pretty_breaks(4)) +
   theme_boxplot()
 
-pdf('output/plots/enzyme_ratios.pdf', width = 7, height = 15)
+pdf('output/plots/enzyme_ratios.pdf', width = 5, height = 8)
 plot(enzme_ratios)
 dev.off()
 
