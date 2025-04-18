@@ -33,9 +33,16 @@ fm04 <- experiment_lmer("xyl_gly.median", "day", fixed_factor = "position", rand
 summary(fm04)
 pairwise_comparisons <- time_comparison(fm04)
 
+model1 <- lme4::lmer(glu_nag.median ~ day * position + (  1 | chainID), data = ER_data)
+summary(model1)
+
+model2 <- lm(glu_nag.median ~ day * position,  data = ER_data)
+summary(model2)
+AIC(model1, model2)
+anova(model1, model2)
 
 #contrast for days
-posthoc_spesific_position <- emmeans(fm04, ~ position | day)
+posthoc_spesific_position <- emmeans(model2, ~ position | day)
 pairwise_comparisons <- contrast(posthoc_spesific_position, method = "pairwise", adjust = "tukey")
 
 
