@@ -26,7 +26,7 @@ average_contrasts_result_calculation <- function(x, data){
   }
 
   # Create a data frame to store the results
-  results <- lp[[i]]@grid
+  results <- data[[i]]@grid
 
   results[[eval(value_name)]] <- get_value_average(arg_name, dynamic_list)
   return(results)
