@@ -40,3 +40,8 @@ color_sample_date_no_zero <- function() {
                               guide = "legend")
 }
 
+color_column <- function() {
+  ggplot2::scale_color_manual(name =  "Column Position",
+                              values = c("#164C6B", "#F3A712", "#E4572E"),
+                              guide = "legend")
+}

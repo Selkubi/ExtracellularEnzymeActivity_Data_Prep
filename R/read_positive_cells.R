@@ -9,5 +9,5 @@
 #'
 #' @examples
 read_positive_cells <- function(data) {
-  return(ifelse(data[1, 1:5] > 0, data[2, 1:5], 0))
+  return(ifelse(data[1, 1:5] > 0, data[2, 1:5], NA))
 }

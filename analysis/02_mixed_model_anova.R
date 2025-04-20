@@ -1,12 +1,13 @@
-source("analysis/EEA.R")
-library(lme4)
+source("analysis/01_EEA_data_import.R")
+#library(lme4)
 library(emmeans)
+library(lmerTest)
 
 ER_data[, c("day", "chainID", "position") := tstrsplit(ER_data$sample, "_")]
 ER_data[, "columnID" := c(1:nrow(ER_data))]
-ER_data[,c("day")] <- as.factor(ER_data$day)
-ER_data[,c("position")] <- as.factor(ER_data$position)
-ER_data[,c("chainID")] <- as.factor(ER_data$chainID)
+ER_data[, c("day")] <- as.factor(ER_data$day)
+ER_data[, c("position")] <- as.factor(ER_data$position)
+ER_data[, c("chainID")] <- as.factor(ER_data$chainID)
 ### Following ch6: Random and mixed effects models
 
 # Check the model assumtions with the following plots
@@ -28,10 +29,22 @@ par(mfrow = c(1, 1))
 
 # The distribuitions looks fine with a couple point exceptions (and the Na values)
 # To get the p value for the mixed effects etc, use the lmerTest package (which also uses lmer but adds some stats)
-fm04 <- lmer(xyl_gly.median ~ day * position + (1 | chainID), data = ER_data)
+fm04 <- experiment_lmer("xyl_gly.median", "day", fixed_factor = "position", random_factor = "chainID", data = ER_data)
 summary(fm04)
+pairwise_comparisons <- time_comparison(fm04)
 
-experiment_lmer("glu.xyl_cbh.median", "day", fixed_factor = "position", random_factor = "chainID", data = ER_data)
+model1 <- lme4::lmer(glu_nag.median ~ day * position + (  1 | chainID), data = ER_data)
+summary(model1)
+
+model2 <- lm(glu_nag.median ~ day * position,  data = ER_data)
+summary(model2)
+AIC(model1, model2)
+anova(model1, model2)
+
+#contrast for days
+posthoc_spesific_position <- emmeans(model2, ~ position | day)
+pairwise_comparisons <- contrast(posthoc_spesific_position, method = "pairwise", adjust = "tukey")
+
 
 fm <-list()
 # Apply experiment_lmer to columns 2 to 9 in ER_data
@@ -60,26 +73,4 @@ control_comparisons <- list()
 for(i in seq_along(fm)){
   control_comparisons[[names(fm)[i]]] <- contrast(posthoc_spesific_position[[i]], "trt.vs.ctrl", ref = "S09")
 }
-
-# MICE imputation
-imputed_data <- mice::mice(ER_data, m = 5, method = 'pmm', seed = 123)
-summary(imputed_data)
-completed_data_1 <- mice::complete(imputed_data, 1)
-completed_datasets <- lapply(1:5, function(i) mice::complete(imputed_data, i))
-models <- lapply(completed_datasets, function(x) {
-  nlme::lme(fixed = glu.xyl_cbh.median ~ day * position,
-            random = ~ 1 | chainID,
-            data = x)
-})
-lapply(models[[1]], emmeans::emmeans(day | position, data = ER_data))
-emmeans::contrast(emmeans::emmeans(models[[1]], ~ day | position, data = ER_data), method =  "trt.vs.ctrl", ref = "S09")
-
-lp <- lapply(models, function(x){
-  # Call experiment_lmer with each response variable
-  fit <-  emmeans::emmeans(x, ~ day | position, data = ER_data)
-  contrast <- emmeans::contrast(fit, method =  "trt.vs.ctrl", ref = "S09")
-  return((contrast))
-})
-
-pool_models <- mice::pool(lp)
 
