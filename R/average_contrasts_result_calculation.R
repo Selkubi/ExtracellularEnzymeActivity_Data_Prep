@@ -25,15 +25,8 @@ average_contrasts_result_calculation <- function(x, data){
     dynamic_list[[i]] <- summary(data[[i]])[[arg_name]]
   }
 
-  # Extract contrasts and positions from the first emmGrid object
-  contrasts <- lapply(lp, function(x) levels(x)$contrast) |> unlist() |> unique()
-  positions <- lapply(lp, function(x) levels(x)$position) |> unlist() |> unique()
-
   # Create a data frame to store the results
-  results <- data.frame(
-    contrast = contrasts ,
-    position = rep(positions, each = length(contrasts))
-  )
+  results <- lp[[i]]@grid
 
   results[[eval(value_name)]] <- get_value_average(arg_name, dynamic_list)
   return(results)

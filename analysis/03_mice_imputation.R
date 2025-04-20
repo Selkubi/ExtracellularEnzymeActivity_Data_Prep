@@ -7,42 +7,55 @@ completed_datasets <- lapply(1:5, function(i) mice::complete(imputed_data, i))
 models <- lapply(X = completed_datasets, FUN = experiment_lmer, response_col = "glu.xyl_cbh.median", y = "day", fixed_factor = "position", random_factor = "chainID")
 lp <- lapply(models, time_comparison)
 
-p_values_list <- list()
+pooled_results <- all_p_value_calculations(object = lp)
 
-# Extract p-values from each emmGrid object
-for (i in seq_along(lp)) {
-  p_values_list[[i]] <- summary(lp[[i]])$p.value
+# string of enzyme ratios that we will apply the above LMM
+enzyme_ratios <- c("xyl_gly.median", "glu.xyl_cbh.median", "glu_pep.median", "pep_pho.median",
+                   "glu_nag.median", "glu_ldopa.median", "cbh_ldopa.median", "nag_ldopa.median")
 
+
+## TIME COMPARISON
+# create the list necessary to save all the results
+models_time_comparison <- list()
+pooled_results_time_comparison <- list()
+
+# run the loop for all the enzyme ratios that we want to model for the paper
+for(i in seq_along(enzyme_ratios)){
+
+        # apply the model to all the imputed datasets calcualted above
+        # for those that do not miss a data, the vectors in the imputed datasets are the same
+        models_time_comparison[[i]] <- lapply(X = completed_datasets, FUN = experiment_lmer, response_col = enzyme_ratios[[i]],
+                                              y = "day", fixed_factor = "position", random_factor = "chainID")
+
+        # Apply the time contrasts
+        lp <- lapply(models_time_comparison[[i]], time_comparison)
+
+        # pool the results by taking the average.
+        # This is ok for our case since the results are too close to each other and we did not impute many missing values
+        # For more info, check paper by David Disabato
+        pooled_results_time_comparison[[enzyme_ratios[[i]]]] <- all_p_value_calculations(object = lp)
 }
 
-# Convert the list of p-values to a matrix
-p_values_matrix <- do.call(rbind, p_values_list)
 
-# Compute the average p-value for each pairwise comparison
-average_p_values <- apply(p_values_matrix, 2, mean)
+## POSITION COMPARISON
+# create the list necessary to save all the results
+models_position_comparison <- list()
+pooled_results_position_comparison <- list()
 
-# Extract contrasts and positions from the first emmGrid object
-contrasts <- lapply(lp, function(x) levels(x)$contrast) |> unlist() |> unique()
-positions <- lapply(lp, function(x) levels(x)$position) |> unlist() |> unique()
 
-# Create a data frame to store the results
-results <- data.frame(
-  contrast = rep(contrasts, length(positions)),
-  position = rep(positions, each = length(contrasts)),
-  average_p_value = rep(average_p_values, each = length(positions))
-)
+# run the loop for all the enzyme ratios that we want to model for the paper
+for(i in seq_along(enzyme_ratios)){
 
-# Print the results
-print(results)
-# this only pools, disregarding the contrasts
-pool_models <- mice::pool(fit)
+  # apply the model to all the imputed datasets calcualted above
+  # for those that do not miss a data, the vectors in the imputed datasets are the same
+  models_position_comparison[[i]] <- lapply(X = completed_datasets, FUN = experiment_lmer, response_col = enzyme_ratios[[i]],
+                                        y = "day", fixed_factor = "position", random_factor = "chainID")
 
-# Initialize containers for the results
-estimates <- list()
-standard_errors <- list()
+  # Apply the time contrasts
+  lp <- lapply(models_position_comparison[[i]], position_comparison)
 
-# Extract estimates and standard errors from each emmGrid object
-for (i in seq_along(lp)) {
-  estimates[[i]] <- lp[[i]][emmean]
-  standard_errors[[i]] <- lp[[i]]$SE
+  # pool the results by taking the average.
+  # This is ok for our case since the results are too close to each other and we did not impute many missing values
+  # For more info, check paper by David Disabato
+  pooled_results_position_comparison[[enzyme_ratios[[i]]]] <- all_p_value_calculations(object = lp)
 }

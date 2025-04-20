@@ -26,7 +26,7 @@ all_p_value_calculations <- function(object) {
     temp_result <- average_contrasts_result_calculation(x = variables[[i]], data = object)
 
     # Merge the current result with the main data frame
-    results <- merge(results, temp_result, by = c("contrast", "position"), all = TRUE)
+    results <- merge(results, temp_result, by = colnames(temp_result[, 1:2]), all = TRUE)
   }
 
   return(results)
