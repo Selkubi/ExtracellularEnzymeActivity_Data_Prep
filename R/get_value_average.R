@@ -15,7 +15,10 @@
 #' # print(result)
 #'
 get_value_average <- function(x, list){
-
+  # Check for NA values in the list
+  if (any(sapply(list, function(vec) any(is.na(vec))))) {
+    stop("NA values found in the input list. Please check your data.")
+  }
   # Extract p-values from each emmGrid object
   arg_name <- deparse(substitute(x))
   var_name <- paste(arg_name, "_matrix")
