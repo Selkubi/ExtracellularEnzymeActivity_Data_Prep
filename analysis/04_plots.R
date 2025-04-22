@@ -18,20 +18,6 @@ ER_data$col_no <-factor(ER_data$col_no,
                                  labels = c("Col1", "Col2", "Col3"))
 melted_ER <- melt(ER_data, id.vars = c("sample", "sample_date", "col_no", "replicate"))
 
-# Individual enzyme ratio boxplots
-ER_data <- set_coloring_column(ER_data)
-
-# Enzyme ratio facet
-melted_ER <- set_coloring_column(melted_ER)
-
-# Overview of all the enzyme ratios
-ggplot(melted_ER) +
-  facet_grid(variable ~ col_no, scale = "free", labeller = labeller(variable = enzyme_labeller(), col_no = column_labeller())) +
-  geom_boxplot(aes(x = as.factor(sample_date), y = (value), fill = highlight, color = highlight), width = 0.5) +
-  fill_col_no() + color_col_no() +
-  theme_boxplot() + theme(legend.position = "right", axis.line.y.right = element_line()) +
-  geom_hline(yintercept = c(0), color = "red", linetype = "dashed") + xlab ("Day") + ylab (NULL)
-
 # Enzyme Ratio plots with log ratio of day0 to other days
 
 summarized_data  <- ER_data |>
@@ -57,10 +43,6 @@ data <-  date_0_ratios |>
   ) |>
   filter(sample_date != 0) |>
   mutate(log_ratio = log(value))
-
-geometric_mean <- function(x){
-  return(exp(mean(log(x))))
-}
 
 ribbon_info <- data |>
   group_by(variable, col_no, sample_date) |>
@@ -99,17 +81,3 @@ enzme_ratios <- ggplot(data, aes(x = col_no, y = log_ratio, color = sample_date,
 pdf('output/plots/enzyme_ratios.pdf', width = 5, height = 8)
 plot(enzme_ratios)
 dev.off()
-
-ggplot(data[data$variable == "ratio_xyl_gly.median",], aes(x = col_no, y = log_ratio)) +
-  facet_wrap(~ sample_date, scales = "free_y", nrow = 4,
-             labeller = labeller(variable = enzyme_labeller), strip.position = "left", axes = "all", axis.labels = "all_y") +
-  geom_ribbon(data = ribbon_info[data$variable == "ratio_xyl_gly.median",], aes(x = col_no, y = mean, group = sample_date,
-         ymin = min,
-         ymax = max, fill = sample_date), alpha = 0.3) +
-  geom_point(aes(color = sample_date, group = replicate), size = 0.5) +
-  geom_line(aes(group = replicate, color = sample_date), alpha = 0.5) +
-  geom_line(data = ribbon_info[data$variable == "ratio_xyl_gly.median",], aes(x = col_no, y = median, group = sample_date, color = sample_date), linewidth = 2) +
-  fill_sample_date() + color_sample_date() +
-  scale_x_discrete(expand = c(0.05, 0.05), labels = column_labeller()) +
-  scale_y_continuous(breaks = scales::pretty_breaks(4)) +
-  theme_boxplot()

@@ -45,32 +45,3 @@ anova(model1, model2)
 posthoc_spesific_position <- emmeans(model2, ~ position | day)
 pairwise_comparisons <- contrast(posthoc_spesific_position, method = "pairwise", adjust = "tukey")
 
-
-fm <-list()
-# Apply experiment_lmer to columns 2 to 9 in ER_data
-fm <- lapply(names(ER_data)[2:9], function(colname) {
-  # Call experiment_lmer with each response variable
-  fit <- experiment_lmer(response_col = colname,
-                         y = "day",
-                         fixed_factor = "position",
-                         random_factor = "chainID",
-                         data = ER_data)
-  summary <- summary(fit)
-  return(list(fit, summary))
-})
-names(fm) <- names(ER_data)[2:9]
-
-# Get the day comparison for each column for each enzyme
-posthoc_spesific_position <- list()
-pairwise_comparisons <- list()
-for (i in seq_along(fm)) {
-  posthoc_spesific_position[[names(fm)[i]]] <- emmeans(fm[[i]][[1]], ~ day | position)
-  pairwise_comparisons[[names(fm)[i]]] <- contrast(posthoc_spesific_position[[i]], method = "pairwise", adjust = "tukey")
-}
-
-# Get the day spesific comparisons where each day is compared only to S09
-control_comparisons <- list()
-for(i in seq_along(fm)){
-  control_comparisons[[names(fm)[i]]] <- contrast(posthoc_spesific_position[[i]], "trt.vs.ctrl", ref = "S09")
-}
-
