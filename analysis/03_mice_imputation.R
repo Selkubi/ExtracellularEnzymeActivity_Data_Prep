@@ -36,12 +36,12 @@ for(i in seq_along(enzyme_ratios)){
         pooled_results_time_comparison[[enzyme_ratios[[i]]]] <- all_p_value_calculations(object = lp)
 }
 
-output <- data.table()
+output_time <- data.table()
 for(i in seq_along(pooled_results_time_comparison)){
-  output <- rbind(output, cbind("ER" = names(pooled_results_time_comparison)[i], pooled_results_time_comparison[[i]]))
+  output_time <- rbind(output_time, cbind("ER" = names(pooled_results_time_comparison)[i], pooled_results_time_comparison[[i]]))
 }
 
-write.csv(output, "output/time_comparison_table.csv")
+write.csv(output_time, "output/time_comparison_table.csv")
 ## POSITION COMPARISON
 # create the list necessary to save all the results
 models_position_comparison <- list()
@@ -65,3 +65,9 @@ for(i in seq_along(enzyme_ratios)){
   pooled_results_position_comparison[[enzyme_ratios[[i]]]] <- all_p_value_calculations(object = lp)
 }
 
+output_position <- data.table()
+for(i in seq_along(pooled_results_position_comparison)){
+  output_position <- rbind(output_position, cbind("ER" = names(pooled_results_position_comparison)[i], pooled_results_position_comparison[[i]]))
+}
+
+write.csv(output_position, "output/position_comparison_table.csv")
