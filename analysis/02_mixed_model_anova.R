@@ -42,6 +42,6 @@ AIC(model1, model2)
 anova(model1, model2)
 
 #contrast for days
-posthoc_spesific_position <- emmeans(model2, ~ position | day)
+posthoc_spesific_position <- emmeans(model1, ~ day | position)
 pairwise_comparisons <- contrast(posthoc_spesific_position, method = "pairwise", adjust = "tukey")
 
