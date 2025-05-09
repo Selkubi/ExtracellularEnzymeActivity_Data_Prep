@@ -4,7 +4,7 @@ imputed_data <- mice::mice(ER_data, m = 5, method = 'pmm', seed = 123)
 summary(imputed_data)
 completed_datasets <- lapply(1:5, function(i) mice::complete(imputed_data, i))
 
-models <- lapply(X = completed_datasets, FUN = experiment_lmer, response_col = "glu.xyl_cbh.median", y = "day", fixed_factor = "position", random_factor = "chainID")
+models <- lapply(X = completed_datasets, FUN = experiment_lmer, response_col = "xyl_gly.median", y = "day", fixed_factor = "position", random_factor = "chainID")
 lp <- lapply(models, time_comparison)
 
 pooled_results <- all_p_value_calculations(object = lp)
@@ -36,7 +36,12 @@ for(i in seq_along(enzyme_ratios)){
         pooled_results_time_comparison[[enzyme_ratios[[i]]]] <- all_p_value_calculations(object = lp)
 }
 
+output <- data.table()
+for(i in seq_along(pooled_results_time_comparison)){
+  output <- rbind(output, cbind("ER" = names(pooled_results_time_comparison)[i], pooled_results_time_comparison[[i]]))
+}
 
+write.csv(output, "output/time_comparison_table.csv")
 ## POSITION COMPARISON
 # create the list necessary to save all the results
 models_position_comparison <- list()
