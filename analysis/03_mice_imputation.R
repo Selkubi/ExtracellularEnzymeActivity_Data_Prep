@@ -5,7 +5,10 @@ summary(imputed_data)
 completed_datasets <- lapply(1:5, function(i) mice::complete(imputed_data, i))
 
 models <- lapply(X = completed_datasets, FUN = experiment_lmer, response_col = "xyl_gly.median", y = "day", fixed_factor = "position", random_factor = "chainID")
-lp <- lapply(models, time_comparison)
+lp <- lapply(models, function(model, data){
+  time_comparison(model, data = completed_datasets)
+  }
+)
 
 pooled_results <- all_p_value_calculations(object = lp)
 
@@ -24,11 +27,16 @@ for(i in seq_along(enzyme_ratios)){
 
         # apply the model to all the imputed datasets calcualted above
         # for those that do not miss a data, the vectors in the imputed datasets are the same
-        models_time_comparison[[i]] <- lapply(X = completed_datasets, FUN = experiment_lmer, response_col = enzyme_ratios[[i]],
+        models_time_comparison[[enzyme_ratios[[i]]]] <- lapply(X = completed_datasets, FUN = experiment_lmer, response_col = enzyme_ratios[[i]],
                                               y = "day", fixed_factor = "position", random_factor = "chainID")
 
+        # To keep the dataset names in the models_time_comparison object, we to a mini loop for passing the names
+        for(j in seq_along(models_time_comparison[[enzyme_ratios[[i]]]])){
+          models_time_comparison[[enzyme_ratios[[i]]]][[j]]$call$data <- bquote(completed_datasets[[.(j)]])
+        }
+
         # Apply the time contrasts
-        lp <- lapply(models_time_comparison[[i]], time_comparison)
+        lp <- lapply(models_time_comparison[[i]], time_comparison, data = completed_datasets)
 
         # pool the results by taking the average.
         # This is ok for our case since the results are too close to each other and we did not impute many missing values
@@ -42,11 +50,11 @@ for(i in seq_along(pooled_results_time_comparison)){
 }
 
 write.csv(output_time, "output/time_comparison_table.csv")
+
 ## POSITION COMPARISON
 # create the list necessary to save all the results
 models_position_comparison <- list()
 pooled_results_position_comparison <- list()
-
 
 # run the loop for all the enzyme ratios that we want to model for the paper
 for(i in seq_along(enzyme_ratios)){
@@ -56,8 +64,12 @@ for(i in seq_along(enzyme_ratios)){
   models_position_comparison[[i]] <- lapply(X = completed_datasets, FUN = experiment_lmer, response_col = enzyme_ratios[[i]],
                                         y = "day", fixed_factor = "position", random_factor = "chainID")
 
+  # To keep the dataset names in the models_time_comparison object, we to a mini loop for passing the names
+  for(j in seq_along(models_time_comparison[[enzyme_ratios[[i]]]])){
+    models_position_comparison[[enzyme_ratios[[i]]]][[j]]$call$data <- bquote(completed_datasets[[.(j)]])
+  }
   # Apply the time contrasts
-  lp <- lapply(models_position_comparison[[i]], position_comparison)
+  lp <- lapply(models_position_comparison[[i]], position_comparison, data = completed_datasets)
 
   # pool the results by taking the average.
   # This is ok for our case since the results are too close to each other and we did not impute many missing values

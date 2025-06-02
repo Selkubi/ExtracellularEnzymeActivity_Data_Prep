@@ -4,8 +4,8 @@ library(emmeans)
 library(lmerTest)
 
 ER_data[, c("day", "chainID", "position") := tstrsplit(ER_data$sample, "_")]
-ER_data[, "columnID" := c(1:nrow(ER_data))]
 ER_data[, c("day")] <- as.factor(ER_data$day)
+ER_data[, "columnID" := c(1:nrow(ER_data))]
 ER_data[, c("position")] <- as.factor(ER_data$position)
 ER_data[, c("chainID")] <- as.factor(ER_data$chainID)
 ### Following ch6: Random and mixed effects models
@@ -29,19 +29,37 @@ par(mfrow = c(1, 1))
 
 # The distribuitions looks fine with a couple point exceptions (and the Na values)
 # To get the p value for the mixed effects etc, use the lmerTest package (which also uses lmer but adds some stats)
-fm04 <- experiment_lmer("xyl_gly.median", "day", fixed_factor = "position", random_factor = "chainID", data = ER_data)
+fm04 <- experiment_lmer("xyl_gly.median", "day", fixed_factor = "position", random_factor = "chainID",
+                        data = ER_data)
 summary(fm04)
 pairwise_comparisons <- time_comparison(fm04)
 
-model1 <- lme4::lmer(glu_nag.median ~ day * position + (  1 | chainID), data = ER_data)
+model1 <- nlme::lme(xyl_gly.median ~ day * position, random = ~  1 | chainID, data = completed_datasets[[5]])
 summary(model1)
+anova(model1)
+confint(model1)
 
-model2 <- lm(glu_nag.median ~ day * position,  data = ER_data)
+model2 <- lm(glu.xyl_cbh.median ~ day * position,  data = completed_datasets[[5]])
 summary(model2)
 AIC(model1, model2)
 anova(model1, model2)
+
+model3 <- experiment_lmer("glu.xyl_cbh.median", "day", fixed_factor = "position", random_factor = "chainID",
+                          data = completed_datasets[[5]])
+
 
 #contrast for days
 posthoc_spesific_position <- emmeans(model1, ~ day | position)
 pairwise_comparisons <- contrast(posthoc_spesific_position, method = "pairwise", adjust = "tukey")
 
+
+# Plotting
+fitdata_gmvolume = as.data.frame(effects::Effect(c("day", "position"),model1))
+
+ggplot(data = ER_data, aes(y=xyl_gly.median, x=position, color=day, group=day, fill=day)) +
+  geom_point() +
+  geom_line(data = fitdata_gmvolume, aes(y=fit)) +
+  geom_ribbon(data = fitdata_gmvolume, aes(y=fit, ymin=lower, ymax=upper), alpha=0.4) +
+  xlab("Position") +
+  ylab(bquote('xyl_gly.median'~(mm^3))) +
+  labs(fill = "Day", group="Day", color="Day")
