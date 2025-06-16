@@ -127,9 +127,13 @@ ER_data_long <- ER_data |>
                             labels = c("Cbh /\n L-DOPA", "Glu + Xyl / \n Cbh",
                                        "Glu /\n L-DOPA", "Glu / NAG",
                                        "Glu / Pep", "Pep / Pho",
+<<<<<<< HEAD
                                        "Xyl / Glu", "NAG /\n L-DOPA")),
                         position = factor(position, levels = c("C1", "C2", "C3"),
                             labels = c("Column 1", "Column 2", "Column 3")))
+=======
+                                       "Xyl / Glu", "NAG /\n L-DOPA")))
+>>>>>>> 7eadd8f8635edfbaf0a4bdb290429895d52f870b
 
 model_data_long <- lapply(names(effects_list), function(enzyme) {
   df <- effects_list[[enzyme]]
@@ -144,11 +148,15 @@ model_data_long <- lapply(names(effects_list), function(enzyme) {
                          labels = c("Cbh /\n L-DOPA", "Glu + Xyl / \n Cbh",
                                     "Glu /\n L-DOPA", "Glu / NAG",
                                     "Glu / Pep", "Pep / Pho",
+<<<<<<< HEAD
                                     "Xyl / Glu", "NAG /\n L-DOPA")),
          sample_date = factor(day, levels = c("S09", "S13", "S16", "S19"),
                               labels = c("0", "03", "10", "17")),
          position = factor(position, levels = c("C1", "C2", "C3"),
                            labels = c("Column 1", "Column 2", "Column 3")))
+=======
+                                    "Xyl / Glu", "NAG /\n L-DOPA")))
+>>>>>>> 7eadd8f8635edfbaf0a4bdb290429895d52f870b
 
 # setting the dodge distance
 pd <- position_dodge(width=0.4)
@@ -230,7 +238,6 @@ enzyme_all <- ggplot(ER_data_long, aes(x = sample_date, y = median_value, group 
                              step.increase = 0.1, step.group.by = "ER",
                              xmin = "x_start_jittered", xmax = "x_end_jittered",
                              color = "position", show.legend = FALSE) + theme(legend.position = "right")
-
 
 pdf('output/plots/enzyme_all_with_p.pdf', width = 7, height = 8)
 plot(enzyme_all)
