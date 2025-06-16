@@ -197,21 +197,29 @@ output_time_transformed <- significant_p_values |>
       average_p.value < 0.01 ~ "**",
       average_p.value < 0.05 ~ "*",
       TRUE ~ ""
+    ),
+    x_start_jittered = case_when(
+      position == "C1" ~ x_start - 0.15,
+      position == "C2" ~ x_start,
+      position == "C3" ~ x_start + 0.15
+    ),
+    x_end_jittered = case_when(
+      position == "C1" ~ x_end - 0.15,
+      position == "C2" ~ x_end ,
+      position == "C3" ~ x_end + 0.15
     )
    )
 
-ggplot(ER_data_long, aes(x = day, y = median_value, group = position, color = position, shape = position)) +
+enzyme_all <- ggplot(ER_data_long, aes(x = day, y = median_value, group = position, color = position, shape = position)) +
   facet_wrap(~enzyme, nrow = 4, scale = "free",
              strip.position = "left", axes = "all", axis.labels = "all_y") +
-  geom_point(size = 1.5, show.legend = FALSE, position=pd, alpha = 0.3) +
-  geom_point(data = model_data_long, aes(x = day, y = median_value), size = 2, position = pd, show.legend = TRUE) +
-  geom_linerange(data = model_data_long, aes(ymin = lower, ymax = upper), position = pd) +
+  geom_point(size = 1.5, position = pd, alpha = 0.3) +
+  geom_point(data = model_data_long, aes(x = day, y = median_value), size = 2, position = pd) +
+  geom_linerange(data = model_data_long, aes(ymin = lower, ymax = upper), position = pd, show.legend = TRUE) +
   theme_boxplot() + xlab("Days") + ylab("Enzyme Ratios") +
-  color_column() +
-  ggpubr::stat_pvalue_manual(data = output_time_transformed, label = "p_symbol", y.position = "y_max", step.increase = 0.1,
-                             #x = output_time_transformed$x_start,
-                                               step.group.by = "ER",
-                                               color = "position", show.legend = FALSE)
-
-
+  color_column() + labs(color  = "Column Position", shape = "Column Position")+
+  ggpubr::stat_pvalue_manual(data = output_time_transformed, label = "p_symbol", y.position = "y_max",
+                             step.increase = 0.1, step.group.by = "ER",
+                             xmin = "x_start_jittered", xmax = "x_end_jittered",
+                             color = "position", show.legend = FALSE)
 
