@@ -127,13 +127,9 @@ ER_data_long <- ER_data |>
                             labels = c("Cbh /\n L-DOPA", "Glu + Xyl / \n Cbh",
                                        "Glu /\n L-DOPA", "Glu / NAG",
                                        "Glu / Pep", "Pep / Pho",
-<<<<<<< HEAD
                                        "Xyl / Glu", "NAG /\n L-DOPA")),
                         position = factor(position, levels = c("C1", "C2", "C3"),
                             labels = c("Column 1", "Column 2", "Column 3")))
-=======
-                                       "Xyl / Glu", "NAG /\n L-DOPA")))
->>>>>>> 7eadd8f8635edfbaf0a4bdb290429895d52f870b
 
 model_data_long <- lapply(names(effects_list), function(enzyme) {
   df <- effects_list[[enzyme]]
@@ -148,15 +144,11 @@ model_data_long <- lapply(names(effects_list), function(enzyme) {
                          labels = c("Cbh /\n L-DOPA", "Glu + Xyl / \n Cbh",
                                     "Glu /\n L-DOPA", "Glu / NAG",
                                     "Glu / Pep", "Pep / Pho",
-<<<<<<< HEAD
                                     "Xyl / Glu", "NAG /\n L-DOPA")),
          sample_date = factor(day, levels = c("S09", "S13", "S16", "S19"),
                               labels = c("0", "03", "10", "17")),
          position = factor(position, levels = c("C1", "C2", "C3"),
                            labels = c("Column 1", "Column 2", "Column 3")))
-=======
-                                    "Xyl / Glu", "NAG /\n L-DOPA")))
->>>>>>> 7eadd8f8635edfbaf0a4bdb290429895d52f870b
 
 # setting the dodge distance
 pd <- position_dodge(width=0.4)
