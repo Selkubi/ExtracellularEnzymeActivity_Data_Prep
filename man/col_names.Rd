@@ -5,7 +5,7 @@
 \alias{col_names}
 \title{Column Names and Labeller}
 \format{
-An object of class \code{character} of length 4.
+An object of class \code{character} of length 3.
 }
 \usage{
 col_names

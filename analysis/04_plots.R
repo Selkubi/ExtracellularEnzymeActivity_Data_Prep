@@ -4,7 +4,7 @@ library(dplyr)
 
 #source("R/functions.R")
 #source("R/plotting_functions.R")
-source("analysis/01_EEA_Data_import.R") # Read the enzyme results, calculate the means/medians and enzyme ratios
+#source("analysis/01_EEA_Data_import.R") # Read the enzyme results, calculate the means/medians and enzyme ratios
 
 if(!dir.exists("output/plots")) {dir.create("output/plots")}
 
@@ -42,7 +42,15 @@ data <-  date_0_ratios |>
     values_to = "value"
   ) |>
   filter(sample_date != 0) |>
-  mutate(log_ratio = log(value))
+  mutate(log_ratio = log(value),
+         variable_labels = factor(variable,  levels = c("ratio_cbh_ldopa.median", "ratio_glu.xyl_cbh.median",
+                                                        "ratio_glu_ldopa.median", "ratio_glu_nag.median",
+                                                        "ratio_glu_pep.median", "ratio_pep_pho.median",
+                                                        "ratio_xyl_gly.median", "ratio_nag_ldopa.median"),
+                                  labels = c("Cbh /\n L-DOPA", "Glu + Xyl / \n Cbh",
+                                             "Glu /\n L-DOPA", "Glu / NAG",
+                                             "Glu / Pep", "Pep / Pho",
+                                             "Xyl / Glu", "NAG /\n L-DOPA")))
 
 ribbon_info <- data |>
   group_by(variable, col_no, sample_date) |>
@@ -51,11 +59,11 @@ ribbon_info <- data |>
          median = median(log_ratio),
          mean = mean(log_ratio))
 
+
 ### LOG RATIO PLOTS ###
 # log ratio plot by column posiiton as the model contrast
 log_ratio_boxplots <- ggplot(data = ribbon_info, mapping = aes(x = sample_date, y = log_ratio, group = col_no, color = col_no, shape = col_no)) +
-  facet_wrap(~variable, nrow = 4, scale = "free", labeller = labeller(variable = enzyme_labeller2),
-                                                                      strip.position = "left", axes = "all", axis.labels = "all_y") +
+  facet_wrap(~variable_labels, nrow = 4, scale = "free", strip.position = "left", axes = "all", axis.labels = "all_y") +
   geom_line(aes(y = 0), colour = "#999", linewidth = 1, linetype = 1) +
   geom_point(size = 1.5, show.legend = FALSE) +
   geom_line(mapping = aes(y = mean), linewidth = 1.2) +
@@ -69,7 +77,7 @@ dev.off()
 
 # log Ratio Plot with the days as the model contrst
 enzme_ratios <- ggplot(data, aes(x = col_no, y = log_ratio, color = sample_date, group = sample_date)) +
-  facet_wrap(~variable, scales = "free", nrow = 4, labeller = labeller(variable = enzyme_labeller),
+  facet_wrap(~variable_labels, scales = "free", nrow = 4,
              strip.position = "left", axes = "all", axis.labels = "all_y") +
   geom_line(aes(y = 0), colour = "#333", linewidth = 1, linetype = 1) +
   geom_point(size = 1.5) +
@@ -84,17 +92,6 @@ plot(enzme_ratios)
 dev.off()
 
 ### MODEL PLOTs (without log ratios)
-
-ggplot(data = melted_ER, mapping = aes(x = sample_date, y = value, group = col_no, color = col_no, shape = col_no)) +
-  facet_wrap(~variable, nrow = 4, scale = "free", labeller = labeller(variable = enzyme_labeller2),
-             strip.position = "left", axes = "all", axis.labels = "all_y") +
-  geom_point(size = 1.5, show.legend = TRUE) +
-  theme_boxplot() + xlab("Days") + ylab("Enzyme Ratios") +
-  color_column()
-
-
-pooled_plotting_calculations <- lapply(models_time_comparison, tidy_pooled_model)
-
 # Calculations for plotting the confidence intervaled model outputs
 effects_list <- list()
 
@@ -122,37 +119,53 @@ ER_data_long <- ER_data |>
     cols = -c(sample, day, position, chainID, columnID, sample_date, replicate, col_no),
     names_to = "enzyme",
     values_to = "median_value"
-  )
-#ER_data_long$enzyme <- sub("\\.median$", "", ER_data_long$enzyme)
+  ) |>
+  mutate(enzyme = factor(enzyme, levels = c("cbh_ldopa.median", "glu.xyl_cbh.median",
+                                                "glu_ldopa.median", "glu_nag.median",
+                                                "glu_pep.median", "pep_pho.median",
+                                                "xyl_gly.median", "nag_ldopa.median"),
+                            labels = c("Cbh /\n L-DOPA", "Glu + Xyl / \n Cbh",
+                                       "Glu /\n L-DOPA", "Glu / NAG",
+                                       "Glu / Pep", "Pep / Pho",
+                                       "Xyl / Glu", "NAG /\n L-DOPA")),
+                        position = factor(position, levels = c("C1", "C2", "C3"),
+                            labels = c("Column 1", "Column 2", "Column 3")))
 
 model_data_long <- lapply(names(effects_list), function(enzyme) {
   df <- effects_list[[enzyme]]
   df$enzyme <- enzyme  # Add enzyme name as a column
   return(df)}) |>
   bind_rows() |>
-  rename(median_value = fit, lower = lower, upper = upper)
-
-#model_data_long$enzyme <- sub("\\.median$", "", model_data_long$enzyme)
-
+  rename(median_value = fit, lower = lower, upper = upper) |>
+  mutate(enzyme = factor(enzyme, levels = c("cbh_ldopa.median", "glu.xyl_cbh.median",
+                                            "glu_ldopa.median", "glu_nag.median",
+                                            "glu_pep.median", "pep_pho.median",
+                                            "xyl_gly.median", "nag_ldopa.median"),
+                         labels = c("Cbh /\n L-DOPA", "Glu + Xyl / \n Cbh",
+                                    "Glu /\n L-DOPA", "Glu / NAG",
+                                    "Glu / Pep", "Pep / Pho",
+                                    "Xyl / Glu", "NAG /\n L-DOPA")),
+         sample_date = factor(day, levels = c("S09", "S13", "S16", "S19"),
+                              labels = c("0", "03", "10", "17")),
+         position = factor(position, levels = c("C1", "C2", "C3"),
+                           labels = c("Column 1", "Column 2", "Column 3")))
 
 # setting the dodge distance
-
 pd <- position_dodge(width=0.4)
-
-plot <- ggplot(ER_data_long, aes(x = day, y = median_value, group = position, color = position, shape = position)) +
-  facet_wrap(~enzyme, nrow = 4, scale = "free",
-             strip.position = "left", axes = "all", axis.labels = "all_y") +
-  geom_point(size = 1.5, show.legend = TRUE, position=pd, alpha = 0.3) +
-  geom_point(data = model_data_long, aes(x = day, y = median_value), size = 2, position=pd,  show.legend = FALSE) +
-  geom_linerange(data = model_data_long, aes(ymin = lower, ymax = upper), position=pd) +
-  theme_boxplot() + xlab("Days") + ylab("Enzyme Ratios") +
-  color_column()
 
 # add the significant p values from the output_time object (in pairs)
 significant_p_values <- output_time %>%
   filter(average_p.value < 0.05) %>%
-  mutate(enzyme = sub("\\.median$", "", ER))
-
+  mutate(enzyme = factor(ER, levels = c("cbh_ldopa.median", "glu.xyl_cbh.median",
+                                            "glu_ldopa.median", "glu_nag.median",
+                                            "glu_pep.median", "pep_pho.median",
+                                            "xyl_gly.median", "nag_ldopa.median"),
+                         labels = c("Cbh /\n L-DOPA", "Glu + Xyl / \n Cbh",
+                                    "Glu /\n L-DOPA", "Glu / NAG",
+                                    "Glu / Pep", "Pep / Pho",
+                                    "Xyl / Glu", "NAG /\n L-DOPA")),
+         position = factor(position, levels = c("C1", "C2", "C3"),
+                           labels = c("Column 1", "Column 2", "Column 3")))
 
 # Function to safely determine the maximum y position for a given enzyme and day
 safe_max <- function(enzyme_val, day_val) {
@@ -176,7 +189,7 @@ line_segments <- significant_p_values %>%
         safe_max(enzyme_val, day_end)
       )
       return(max_y)
-    }, ER, contrast),
+    }, enzyme, contrast),
 
     # Determine the x positions for the start and end of each line
     x_start = as.numeric(factor(gsub(" - .*", "", contrast), levels = levels(ER_data_long$day))),
@@ -184,36 +197,41 @@ line_segments <- significant_p_values %>%
   )
 
 output_time_transformed <- significant_p_values |>
-  inner_join(line_segments[,-c(4:9)], by =  join_by(ER == ER, contrast == contrast, position == position) ) |>
+  inner_join(line_segments[,-c(4:8)], by =  join_by(ER == ER, contrast == contrast, position == position, enzyme == enzyme)) |>
   tidyr::separate(contrast, into = c("group1", "group2"), sep = " - ") |>
    mutate(
-    enzyme = ER,
     p_symbol = case_when(
       average_p.value < 0.001 ~ "***",
       average_p.value < 0.01 ~ "**",
       average_p.value < 0.05 ~ "*",
       TRUE ~ ""
     ),
-    x_shifted = if(group1 == "S09")
-     {group1 == x_start} else if(group1 == "S13"){group1 == x_start+0.4}
-
+    x_start_jittered = case_when(
+      position == "Column 1" ~ x_start - 0.15,
+      position == "Column 2" ~ x_start,
+      position == "Column 3" ~ x_start + 0.15
+    ),
+    x_end_jittered = case_when(
+      position == "Column 1" ~ x_end - 0.15,
+      position == "Column 2" ~ x_end ,
+      position == "Column 3" ~ x_end + 0.15
     )
    )
 
-ggplot(ER_data_long, aes(x = day, y = median_value, group = position, color = position, shape = position)) +
-  facet_wrap(~enzyme, nrow = 4, scale = "free", labeller = labeller(enzyme = enzyme_labeller(enzyme)),
+enzyme_all <- ggplot(ER_data_long, aes(x = sample_date, y = median_value, group = position, color = position, shape = position)) +
+  facet_wrap(~enzyme, nrow = 4, scale = "free",
              strip.position = "left", axes = "all", axis.labels = "all_y") +
-  geom_point(size = 1.5, show.legend = FALSE, position=pd, alpha = 0.3) +
-  geom_point(data = model_data_long, aes(x = day, y = median_value), size = 2, position=pd,  show.legend = FALSE) +
- # geom_segment(data = line_segments, aes(x = x_start, xend = x_end, y = y_position, yend = y_position, color = position),
-               # position = position_jitter(width = 0, height = 0.02)) +
-  geom_linerange(data = model_data_long, aes(ymin = lower, ymax = upper), position=pd) +
+  geom_point(size = 1.5, position = pd, alpha = 0.3) +
+  geom_point(data = model_data_long, aes(x = sample_date , y = median_value), size = 2, position = pd) +
+  geom_linerange(data = model_data_long, aes(ymin = lower, ymax = upper), position = pd, show.legend = TRUE) +
   theme_boxplot() + xlab("Days") + ylab("Enzyme Ratios") +
-  color_column() +
-  ggpubr::stat_pvalue_manual(data = output_time_transformed, label = "p_symbol", y.position = "y_max", step.increase = 0.1,
-                             x = output_time_transformed$x_start,
-                                               step.group.by = "ER",
-                                               color = "position")
+  color_column() + labs(color  = "Column Position", shape = "Column Position") +
+  ggpubr::stat_pvalue_manual(data = output_time_transformed, label = "p_symbol", y.position = "y_max",
+                             step.increase = 0.1, step.group.by = "ER",
+                             xmin = "x_start_jittered", xmax = "x_end_jittered",
+                             color = "position", show.legend = FALSE) + theme(legend.position = "right")
 
 
-
+pdf('output/plots/enzyme_all_with_p.pdf', width = 7, height = 8)
+plot(enzyme_all)
+dev.off()

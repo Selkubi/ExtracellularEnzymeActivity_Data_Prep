@@ -50,6 +50,8 @@ for(i in seq_along(pooled_results_time_comparison)){
 }
 
 write.csv(output_time, "output/time_comparison_table.csv")
+pooled_plotting_calculations <- lapply(models_time_comparison, tidy_pooled_model)
+
 
 ## POSITION COMPARISON
 # create the list necessary to save all the results
@@ -65,7 +67,7 @@ for(i in seq_along(enzyme_ratios)){
                                         y = "day", fixed_factor = "position", random_factor = "chainID")
 
   # To keep the dataset names in the models_time_comparison object, we to a mini loop for passing the names
-  for(j in seq_along(models_time_comparison[[enzyme_ratios[[i]]]])){
+  for(j in seq_along(models_position_comparison[[enzyme_ratios[[i]]]])){
     models_position_comparison[[enzyme_ratios[[i]]]][[j]]$call$data <- bquote(completed_datasets[[.(j)]])
   }
   # Apply the time contrasts
@@ -83,3 +85,4 @@ for(i in seq_along(pooled_results_position_comparison)){
 }
 
 write.csv(output_position, "output/position_comparison_table.csv")
+
