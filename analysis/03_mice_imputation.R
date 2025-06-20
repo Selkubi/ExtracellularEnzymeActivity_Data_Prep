@@ -63,7 +63,7 @@ for(i in seq_along(enzyme_ratios)){
 
   # apply the model to all the imputed datasets calcualted above
   # for those that do not miss a data, the vectors in the imputed datasets are the same
-  models_position_comparison[[i]] <- lapply(X = completed_datasets, FUN = experiment_lmer, response_col = enzyme_ratios[[i]],
+  models_position_comparison[[enzyme_ratios[[i]]]] <- lapply(X = completed_datasets, FUN = experiment_lmer, response_col = enzyme_ratios[[i]],
                                         y = "day", fixed_factor = "position", random_factor = "chainID")
 
   # To keep the dataset names in the models_time_comparison object, we to a mini loop for passing the names

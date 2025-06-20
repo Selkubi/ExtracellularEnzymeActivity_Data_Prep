@@ -4,12 +4,14 @@
 \alias{time_comparison}
 \title{Perform Pairwise Comparisons of Estimated Marginal Means by Day and Position}
 \usage{
-time_comparison(model)
+time_comparison(model, data)
 }
 \arguments{
 \item{model}{An object of class \code{lmerMod} or any other model object that is
 compatible with the \code{emmeans} function. This model should include \code{day}
 and \code{position} as factors.}
+
+\item{data}{The dataset the model is calculated from}
 }
 \value{
 A data frame containing the results of the pairwise comparisons,
