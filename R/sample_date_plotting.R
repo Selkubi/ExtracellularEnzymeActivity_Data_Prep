@@ -16,15 +16,10 @@
 #' ggplot(mtcars, aes(factor(cyl), color = factor(gear))) +
 #'   geom_line() +
 #'   color_sample_date()
-fill_sample_date <- function() {
-  ggplot2::scale_fill_manual(name =  "Sampling Date",
-                    values = c("#b7cdb8", "#e7dff1", "#c9bbd8", "#ac98c1"),
-                    guide = "legend")
-}
 
 color_sample_date <- function() {
   ggplot2::scale_color_manual(name =  "Sampling Date",
-                     values = c("#b7cdb8", "#e7dff1", "#c9bbd8", "#ac98c1"),
+                     values = c( "#f1a226", "#9fc8c8", "#54a1a1", "#1f6f6f"),
                      guide = "legend")
 }
 
