@@ -112,6 +112,17 @@ enzyme_all_position_with_p <- ggplot(ER_data_long, aes(x = position, y = median_
                              xmin = "x_start_jittered", xmax = "x_end_jittered",
                              color = "sample_date", show.legend = TRUE) + theme(legend.position = "right")
 
+facet_labels <- data.frame(
+  enzyme = levels(ER_data_long$enzyme),  # Columns (left-to-right)
+  label = paste0( "(",letters[1:8], ")")
+)
+
+enzyme_all_position_with_p <- enzyme_all_position_with_p +
+  geom_text(data = facet_labels, aes(x = levels(ER_data_long$position)[3],  # Leftmost position
+                                     y = Inf, label = label, group = enzyme),
+            inherit.aes = FALSE, hjust = -0.5,  vjust = 1.7, size = 4)
+
+
 pdf('output/plots/enzyme_all_position.pdf', width = 7.5, height = 8)
 plot(enzyme_all_position_with_p)
 dev.off()

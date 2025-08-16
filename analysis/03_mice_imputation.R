@@ -52,7 +52,6 @@ for(i in seq_along(pooled_results_time_comparison)){
 write.csv(output_time, "output/time_comparison_table.csv")
 pooled_plotting_calculations <- lapply(models_time_comparison, tidy_pooled_model)
 
-
 ## POSITION COMPARISON
 # create the list necessary to save all the results
 models_position_comparison <- list()
