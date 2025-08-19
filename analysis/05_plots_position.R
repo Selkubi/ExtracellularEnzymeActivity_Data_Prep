@@ -99,7 +99,7 @@ output_position_transformed <- significant_p_values_position |>
     )
   )
 
-enzyme_all_position_with_p <- ggplot(ER_data_long, aes(x = position, y = median_value, group = sample_date, color = sample_date, shape = sample_date)) +
+enzyme_plot_position <- ggplot(ER_data_long, aes(x = position, y = median_value, group = sample_date, color = sample_date, shape = sample_date)) +
   facet_wrap(~enzyme, nrow = 4, scale = "free",
              strip.position = "left", axes = "all", axis.labels = "all_y") +
   geom_point(size = 1.5, position = pd, alpha = 0.3) +
@@ -113,11 +113,11 @@ enzyme_all_position_with_p <- ggplot(ER_data_long, aes(x = position, y = median_
                              color = "sample_date", show.legend = TRUE) + theme(legend.position = "right")
 
 facet_labels <- data.frame(
-  enzyme = levels(ER_data_long$enzyme),  # Columns (left-to-right)
+  enzyme = factor(levels(ER_data_long$enzyme)),  # Columns (left-to-right)
   label = paste0( "(",letters[1:8], ")")
 )
 
-enzyme_all_position_with_p <- enzyme_all_position_with_p +
+enzyme_all_position_with_p <- enzyme_plot_position +
   geom_text(data = facet_labels, aes(x = levels(ER_data_long$position)[3],  # Leftmost position
                                      y = Inf, label = label, group = enzyme),
             inherit.aes = FALSE, hjust = -0.5,  vjust = 1.7, size = 4)
