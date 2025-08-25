@@ -32,17 +32,18 @@ par(mfrow = c(1, 1))
 fm04 <- experiment_lmer("xyl_gly.median", "day", fixed_factor = "position", random_factor = "chainID",
                         data = ER_data)
 summary(fm04)
-pairwise_comparisons <- time_comparison(fm04)
+pairwise_comparisons <- time_comparison(fm04, ER_data)
 
-model1 <- nlme::lme(xyl_gly.median ~ day * position, random = ~  1 | chainID, data = completed_datasets[[5]])
+model1 <- nlme::lme(glu_nag.median ~ day * position, random = ~  1 | chainID, data = completed_datasets[[5]])
 summary(model1)
 anova(model1)
 confint(model1)
 
-model2 <- lm(glu.xyl_cbh.median ~ day * position,  data = completed_datasets[[5]])
+model2 <- lm(glu_nag.median ~ day * position,  data = completed_datasets[[5]])
 summary(model2)
 AIC(model1, model2)
 anova(model1, model2)
+RLRsim::exactRLRT(model1)
 
 model3 <- experiment_lmer("glu.xyl_cbh.median", "day", fixed_factor = "position", random_factor = "chainID",
                           data = completed_datasets[[5]])
