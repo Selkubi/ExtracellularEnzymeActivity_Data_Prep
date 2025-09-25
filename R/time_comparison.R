@@ -9,6 +9,8 @@
 #'   compatible with the `emmeans` function. This model should include `day`
 #'   and `position` as factors.
 #'
+#' @param data The dataset the model is calculated from
+#'
 #' @return A data frame containing the results of the pairwise comparisons,
 #'   including the estimated differences, standard errors, test statistics,
 #'   p-values, and confidence intervals. The comparisons are adjusted using
@@ -34,8 +36,8 @@
 #' The `emmeans` function for computing estimated marginal means and the
 #' `contrast` function for performing pairwise comparisons.
 #'
-time_comparison <- function(model) {
-  posthoc_spesific_position <- emmeans(model, specs = ~day | position)
+time_comparison <- function(model, data) {
+  posthoc_spesific_position <- emmeans(model, specs = ~day | position, data = data)
   pairwise_comparisons <- contrast(posthoc_spesific_position, method = "pairwise", adjust = "tukey")
   return(pairwise_comparisons)
 }

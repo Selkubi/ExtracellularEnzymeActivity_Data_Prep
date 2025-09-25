@@ -21,11 +21,17 @@
 #' @export
 experiment_lmer <- function(response_col, y, fixed_factor, random_factor, data) {
   # Construct the formula dynamically using the column name
-formula <- as.formula(paste(response_col, "~", y, "*", fixed_factor))
-random_formula <- as.formula(paste("~ 1 | ", random_factor))
+  formula <- as.formula(paste(response_col, "~", y, "*", fixed_factor))
+  random_formula <- as.formula(paste("~ 1 | ", random_factor))
 
+  model <- nlme::lme(formula,
+            random = random_formula,
+            data = data)
 
-nlme::lme(formula,
-  random = random_formula,
-  data = data)
+  # we change the call arguments to what they are defined by the user since we need them in the effects function later on for plotting
+  model$call$fixed <- formula
+  model$call$random <- random_formula
+  model$call$data <- as.name(deparse(substitute(data)))
+
+  return(model)
 }
