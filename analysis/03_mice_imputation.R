@@ -1,10 +1,10 @@
 # this scripts follows the same strategy in 02_mixed model but does it within the mice imputation
 # MICE imputation
-imputed_data <- mice::mice(ER_data, m = 5, method = 'pmm', seed = 123)
+imputed_data <- mice::mice(EEA_data, m = 5, method = 'pmm', seed = 123)
 summary(imputed_data)
 completed_datasets <- lapply(1:5, function(i) mice::complete(imputed_data, i))
 
-models <- lapply(X = completed_datasets, FUN = experiment_lmer, response_col = "xyl_gly.median", y = "day", fixed_factor = "position", random_factor = "chainID")
+models <- lapply(X = completed_datasets, FUN = experiment_lmer, response_col = "log_normalized_Pep", y = "day", fixed_factor = "position", random_factor = "chainID")
 lp <- lapply(models, function(model, data){
   time_comparison(model, data = completed_datasets)
   }
@@ -13,8 +13,8 @@ lp <- lapply(models, function(model, data){
 pooled_results <- all_p_value_calculations(object = lp)
 
 # string of enzyme ratios that we will apply the above LMM
-enzyme_ratios <- c("xyl_gly.median", "glu.xyl_cbh.median", "glu_pep.median", "pep_pho.median",
-                   "glu_nag.median", "glu_ldopa.median", "cbh_ldopa.median", "nag_ldopa.median")
+enzyme_ratios <- c("log_normalized_Cbh", "log_normalized_Gly", "log_normalized_Ldopa", "log_normalized_NAG",
+                   "log_normalized_Pep", "log_normalized_Pho", "log_normalized_Xyl")
 
 
 ## TIME COMPARISON
@@ -46,7 +46,7 @@ for(i in seq_along(enzyme_ratios)){
 
 output_time <- data.table()
 for(i in seq_along(pooled_results_time_comparison)){
-  output_time <- rbind(output_time, cbind("ER" = names(pooled_results_time_comparison)[i], pooled_results_time_comparison[[i]]))
+  output_time <- rbind(output_time, cbind("EEA" = names(pooled_results_time_comparison)[i], pooled_results_time_comparison[[i]]))
 }
 
 write.csv(output_time, "output/time_comparison_table.csv")

@@ -9,18 +9,18 @@ library(dplyr)
 if(!dir.exists("output/plots")) {dir.create("output/plots")}
 
 # Set the factor names for plotting
-ER_data[, c("sample_date", "replicate", "col_no") := tstrsplit(sample, "_")]
-ER_data$sample_date <- factor(ER_data$sample_date,
+EEA_data[, c("sample_date", "replicate", "col_no") := tstrsplit(sample, "_")]
+EEA_data$sample_date <- factor(EEA_data$sample_date,
                            levels = c("S09", "S13", "S16", "S19"),
                            labels = c("0", "03", "10", "17")) #Convert the sample date to days as a factor for ease in plotting
-ER_data$col_no <-factor(ER_data$col_no,
+EEA_data$col_no <-factor(EEA_data$col_no,
                                  levels = c("C1", "C2", "C3"),
                                  labels = c("Col1", "Col2", "Col3"))
-melted_ER <- melt(ER_data[,-c("day", "chainID", "position", "columnID")], id.vars = c("sample", "sample_date", "col_no", "replicate"))
+melted_ER <- melt(EEA_data[,-c("day", "chainID", "position")], id.vars = c("sample", "sample_date", "col_no", "replicate"))
 
 # Enzyme Ratio plots with log ratio of day0 to other days
 
-summarized_data  <- ER_data |>
+summarized_data  <- EEA_data |>
   group_by(sample_date, col_no) |>
   summarise(across(where(is.numeric), mean, na.rm = TRUE))
 
@@ -29,7 +29,7 @@ sample_date_0  <- summarized_data |>
   filter(sample_date == '0') |>
   select(-sample_date)
 
-date_0_ratios <- ER_data[,-c("day", "chainID", "position", "columnID")] |>
+date_0_ratios <- EEA_data[,-c("day", "chainID", "position")] |>
   mutate(across(where(is.numeric), ~ . / sample_date_0[[cur_column()]][match(col_no, sample_date_0$col_no)], .names = "ratio_{col}")) |>
   ungroup() |>
   select(sample_date, col_no, replicate, starts_with("ratio_"))
@@ -43,14 +43,14 @@ data <-  date_0_ratios |>
   ) |>
   filter(sample_date != 0) |>
   mutate(log_ratio = log(value),
-         variable_labels = factor(variable,  levels = c("ratio_cbh_ldopa.median", "ratio_glu.xyl_cbh.median",
-                                                        "ratio_glu_ldopa.median", "ratio_glu_nag.median",
-                                                        "ratio_glu_pep.median", "ratio_pep_pho.median",
-                                                        "ratio_xyl_gly.median", "ratio_nag_ldopa.median"),
-                                  labels = c("Cbh /\n L-DOPA", "Glu + Xyl / \n Cbh",
-                                             "Glu /\n L-DOPA", "Glu / NAG",
-                                             "Glu / Pep", "Pep / Pho",
-                                             "Xyl / Glu", "NAG /\n L-DOPA")))
+         variable_labels = factor(variable,  levels = c("ratio_log_normalized_Cbh", "ratio_log_normalized_Gly",
+                                                        "ratio_log_normalized_Ldopa", "ratio_log_normalized_NAG",
+                                                        "ratio_log_normalized_Pep", "ratio_log_normalized_Pho",
+                                                        "ratio_log_normalized_Xyl"),
+                                  labels = c("Cbh", "Glu",
+                                             "L-DOPA", "NAG",
+                                             "Pep", "Pho",
+                                             "Xyl")))
 
 ribbon_info <- data |>
   group_by(variable, col_no, sample_date) |>
@@ -114,20 +114,20 @@ for(i in seq_along(enzyme_ratios)){
 
 # Rearranging dataframes for the facet plots
 
-ER_data_long <- ER_data |>
+ER_data_long <- EEA_data |>
   tidyr::pivot_longer(
-    cols = -c(sample, day, position, chainID, columnID, sample_date, replicate, col_no),
+    cols = -c(sample, day, position, chainID, sample_date, replicate, col_no),
     names_to = "enzyme",
     values_to = "median_value"
   ) |>
-  mutate(enzyme = factor(enzyme, levels = c("cbh_ldopa.median", "glu.xyl_cbh.median",
-                                                "glu_ldopa.median", "glu_nag.median",
-                                                "glu_pep.median", "pep_pho.median",
-                                                "xyl_gly.median", "nag_ldopa.median"),
-                            labels = c("Cbh /\n L-DOPA", "Glu + Xyl / \n Cbh",
-                                       "Glu /\n L-DOPA", "Glu / NAG",
-                                       "Glu / Pep", "Pep / Pho",
-                                       "Xyl / Glu", "NAG /\n L-DOPA")),
+  mutate(enzyme = factor(enzyme,levels = c("log_normalized_Cbh", "log_normalized_Gly",
+                                           "log_normalized_Ldopa", "log_normalized_NAG",
+                                           "log_normalized_Pep", "log_normalized_Pho",
+                                           "log_normalized_Xyl"),
+                         labels = c("Cbh", "Glu",
+                                    "L-DOPA", "NAG",
+                                    "Pep", "Pho",
+                                    "Xyl")),
                         position = factor(position, levels = c("C1", "C2", "C3"),
                             labels = c("Column 1", "Column 2", "Column 3")))
 
@@ -137,14 +137,14 @@ model_data_long <- lapply(names(effects_list), function(enzyme) {
   return(df)}) |>
   bind_rows() |>
   rename(median_value = fit, lower = lower, upper = upper) |>
-  mutate(enzyme = factor(enzyme, levels = c("cbh_ldopa.median", "glu.xyl_cbh.median",
-                                            "glu_ldopa.median", "glu_nag.median",
-                                            "glu_pep.median", "pep_pho.median",
-                                            "xyl_gly.median", "nag_ldopa.median"),
-                         labels = c("Cbh /\n L-DOPA", "Glu + Xyl / \n Cbh",
-                                    "Glu /\n L-DOPA", "Glu / NAG",
-                                    "Glu / Pep", "Pep / Pho",
-                                    "Xyl / Glu", "NAG /\n L-DOPA")),
+  mutate(enzyme = factor(enzyme, levels = c("log_normalized_Cbh", "log_normalized_Gly",
+                                            "log_normalized_Ldopa", "log_normalized_NAG",
+                                            "log_normalized_Pep", "log_normalized_Pho",
+                                            "log_normalized_Xyl"),
+                         labels = c("Cbh", "Glu",
+                                    "L-DOPA", "NAG",
+                                    "Pep", "Pho",
+                                    "Xyl")),
          sample_date = factor(day, levels = c("S09", "S13", "S16", "S19"),
                               labels = c("0", "03", "10", "17")),
          position = factor(position, levels = c("C1", "C2", "C3"),
@@ -156,14 +156,14 @@ pd <- position_dodge(width=0.4)
 # add the significant p values from the output_time object (in pairs)
 significant_p_values <- output_time %>%
   filter(average_p.value < 0.05) %>%
-  mutate(enzyme = factor(ER, levels = c("cbh_ldopa.median", "glu.xyl_cbh.median",
-                                            "glu_ldopa.median", "glu_nag.median",
-                                            "glu_pep.median", "pep_pho.median",
-                                            "xyl_gly.median", "nag_ldopa.median"),
-                         labels = c("Cbh /\n L-DOPA", "Glu + Xyl / \n Cbh",
-                                    "Glu /\n L-DOPA", "Glu / NAG",
-                                    "Glu / Pep", "Pep / Pho",
-                                    "Xyl / Glu", "NAG /\n L-DOPA")),
+  mutate(enzyme = factor(EEA, levels = c("log_normalized_Cbh", "log_normalized_Gly",
+                                        "log_normalized_Ldopa", "log_normalized_NAG",
+                                        "log_normalized_Pep", "log_normalized_Pho",
+                                        "log_normalized_Xyl"),
+                         labels = c("Cbh", "Glu",
+                                    "L-DOPA", "NAG",
+                                    "Pep", "Pho",
+                                    "Xyl")),
          position = factor(position, levels = c("C1", "C2", "C3"),
                            labels = c("Column 1", "Column 2", "Column 3")))
 
@@ -192,12 +192,12 @@ line_segments <- significant_p_values %>%
     }, enzyme, contrast),
 
     # Determine the x positions for the start and end of each line
-    x_start = as.numeric(factor(gsub(" - .*", "", contrast), levels = levels(ER_data_long$day))),
-    x_end = as.numeric(factor(gsub(".* - ", "", contrast), levels = levels(ER_data_long$day)))
+    x_start = as.numeric(factor(gsub(" - .*", "", contrast), levels = levels(as.factor(ER_data_long$day)))),
+    x_end = as.numeric(factor(gsub(".* - ", "", contrast), levels = levels(as.factor(ER_data_long$day))))
   )
 
 output_time_transformed <- significant_p_values |>
-  inner_join(line_segments[,-c(4:8)], by =  join_by(ER == ER, contrast == contrast, position == position, enzyme == enzyme)) |>
+  inner_join(line_segments[,-c(4:8)], by =  join_by(EEA == EEA, contrast == contrast, position == position, enzyme == enzyme)) |>
   tidyr::separate(contrast, into = c("group1", "group2"), sep = " - ") |>
    mutate(
     p_symbol = case_when(
@@ -227,13 +227,13 @@ enzyme_plot <- ggplot(ER_data_long, aes(x = sample_date, y = median_value, group
   theme_boxplot() + xlab("Days") + ylab("Enzyme Ratios") +
   color_column() + labs(color  = "Column Position", shape = "Column Position") +
   ggpubr::stat_pvalue_manual(data = output_time_transformed, label = "p_symbol", y.position = "y_max",
-                             step.increase = 0.1, step.group.by = "ER",
+                             step.increase = 0.1, step.group.by = "EEA",
                              xmin = "x_start_jittered", xmax = "x_end_jittered",
                              color = "position", show.legend = FALSE) + theme(legend.position = "right")
 
 facet_labels <- data.frame(
   enzyme = factor(levels(ER_data_long$enzyme)),  # Columns (left-to-right)
-  label = paste0( "(",letters[1:8], ")")
+  label = paste0( "(",letters[1:7], ")")
 )
 
 enzyme_all <- enzyme_plot +
