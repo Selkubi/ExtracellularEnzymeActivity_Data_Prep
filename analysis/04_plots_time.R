@@ -197,7 +197,7 @@ line_segments <- significant_p_values %>%
   )
 
 output_time_transformed <- significant_p_values |>
-  inner_join(line_segments[,-c(4:8)], by =  join_by(ER == ER, contrast == contrast, position == position, enzyme == enzyme)) |>
+  inner_join(line_segments[,-c(4:8)], by =  join_by(ER == ER, enzyme == enzyme, contrast == contrast, position == position)) |>
   tidyr::separate(contrast, into = c("group1", "group2"), sep = " - ") |>
    mutate(
     p_symbol = case_when(
@@ -227,7 +227,7 @@ enzyme_plot <- ggplot(ER_data_long, aes(x = sample_date, y = median_value, group
   theme_boxplot() + xlab("Days") + ylab("Enzyme Ratios") +
   color_column() + labs(color  = "Column Position", shape = "Column Position") +
   ggpubr::stat_pvalue_manual(data = output_time_transformed, label = "p_symbol", y.position = "y_max",
-                             step.increase = 0.1, step.group.by = "ER",
+                             step.increase = 0.1, step.group.by = "enzyme",
                              xmin = "x_start_jittered", xmax = "x_end_jittered",
                              color = "position", show.legend = FALSE) + theme(legend.position = "right")
 
