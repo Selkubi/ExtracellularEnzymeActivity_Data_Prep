@@ -32,10 +32,10 @@ significant_p_values_position <- output_position %>%
                                         "glu_ldopa.median", "glu_nag.median",
                                         "glu_pep.median", "pep_pho.median",
                                         "xyl_gly.median", "nag_ldopa.median"),
-                         labels = c("Cbh /\n L-DOPA", "Glu + Xyl / \n Cbh",
-                                    "Glu /\n L-DOPA", "Glu / NAG",
+                         labels = c("Cbh / Pox", "Glu + Xyl / \n Cbh",
+                                    "Glu / Pox", "Glu / NAG",
                                     "Glu / Pep", "Pep / Pho",
-                                    "Xyl / Glu", "NAG /\n L-DOPA")))
+                                    "Xyl / Glu", "NAG / Pox")))
 
 # Function to safely determine the maximum y position for a given enzyme and day
 safe_max <- function(enzyme_val, day_val) {
@@ -55,8 +55,8 @@ line_segments_position <- significant_p_values_position %>%
   mutate(
     # Determine the y positions for the start and end of each line
     y_max = mapply(function(enzyme_val, contrast_val) {
-      day_start <- paste0("Column ", sub("^C([0-9]+).*$", "\\1", contrast_val))
-      day_end <- paste0("Column ", sub("^C[0-9]+.*C([0-9]+).*$", "\\1", contrast_val))
+      day_start <- paste0("C", sub("^C([0-9]+).*$", "\\1", contrast_val))
+      day_end <- paste0("C", sub("^C[0-9]+.*C([0-9]+).*$", "\\1", contrast_val))
       max_y <- max(
         safe_max(enzyme_val, day_start),
         safe_max(enzyme_val, day_end)
@@ -120,9 +120,9 @@ facet_labels <- data.frame(
 enzyme_all_position_with_p <- enzyme_plot_position +
   geom_text(data = facet_labels, aes(x = levels(ER_data_long$position)[3],  # Leftmost position
                                      y = Inf, label = label, group = enzyme),
-            inherit.aes = FALSE, hjust = -0.5,  vjust = 1.7, size = 4)
+            inherit.aes = FALSE, hjust = -0.1,  vjust = 1.7, size = 4)
 
 
-pdf('output/plots/enzyme_all_position.pdf', width = 7.5, height = 8)
+pdf('output/plots/enzyme_all_position.pdf', width = 7, height = 8)
 plot(enzyme_all_position_with_p)
 dev.off()

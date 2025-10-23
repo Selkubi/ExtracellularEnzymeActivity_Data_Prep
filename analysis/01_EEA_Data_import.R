@@ -20,6 +20,7 @@ list_data <- purrr::map(list_data, calculate_median)
 
 # Calculate pre-determined enzyme ratios. For more information the functions.R file. Set the column name as mean or median according to the preference in line above.
 ER_data <- calculate_enzyme_ratios(list_data, column_name = "median")
+ER_data[ER_data$sample =="S09_K_C1"][,2:9] <- NA
 
 # Convert the NaN and Inf values to 0 since these are all below the detection limit values due to the negative measurements, indicating the real fluorescence is close to 0
 ER_data[is.nan.data.frame(ER_data)] <- NA
