@@ -153,6 +153,6 @@ enzyme_all_position_with_p <- enzyme_plot_position +
             inherit.aes = FALSE, hjust = -0.9,  vjust = 1.5, size = 4)
 
 
-pdf('output/plots/enzyme_all_position.pdf', width = 8, height = 8)
+pdf('output/plots/enzyme_all_position.pdf', width = 10, height = 8)
 plot(enzyme_all_position_with_p)
 dev.off()

@@ -7,10 +7,10 @@ completed_datasets <- lapply(1:5, function(i) mice::complete(imputed_data, i))
 # Manual averaging across all imputed datasets
 # will be used for plotting later on
 pooled_data <- completed_datasets %>%
-  lapply(function(df) select(df, sample, where(is.numeric))) %>%
+  lapply(function(df) dplyr::select(df, sample, where(is.numeric))) %>%
   bind_rows() %>% group_by(sample) %>%
   summarise(across(where(is.numeric), mean)) %>%
-  select(-columnID) %>%
+  dplyr::select(-columnID) %>%
   as.data.table()
 
 pooled_data[, c("sample_date", "replicate", "position") := tstrsplit(pooled_data$sample, "_")]
