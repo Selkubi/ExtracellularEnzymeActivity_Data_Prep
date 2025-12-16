@@ -130,9 +130,10 @@ enzyme_plot_position <- ggplot(ER_data_long, aes(x = position, y = median_value,
   geom_point(size = 1.5, position = pd, alpha = 0.3) +
   geom_point(data = model_data_long, aes(x = position , y = median_value), size = 2.2, position = pd) +
   geom_linerange(data = model_data_long, aes(ymin = lower, ymax = upper), position = pd, show.legend = TRUE) +
-  geom_ribbon(data = ribbon_data, aes(x = position, ymax = max, ymin = min,
-                                      group = sample_date, fill = sample_date),
-              position = pd, inherit.aes = F, alpha = 0.2, show.legend = FALSE) +
+ # geom_ribbon(data = ribbon_data, aes(x = position, ymax = max, ymin = min,
+      #                                group = sample_date, fill = sample_date),
+       #       position = pd, inherit.aes = F, alpha = 0.2, show.legend = FALSE) +
+  geom_line(data = model_data_long, aes(x = position , y = median_value), position = pd) +
   theme_boxplot() + xlab("Position") + ylab("Enzyme Ratios") + scale_shape_manual(values = c(15, 16, 17, 18)) +
   color_sample_date() + fill_sample_date() +
   labs(color  = "Day", shape = "Day") +
