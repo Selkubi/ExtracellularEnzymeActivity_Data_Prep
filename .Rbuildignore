@@ -3,3 +3,5 @@
 ^EEAanalysis\.Rproj$
 ^\.Rproj\.user$
 ^data/
+^\.positai$
+^\.claude$

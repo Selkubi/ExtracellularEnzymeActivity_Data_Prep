@@ -18,19 +18,25 @@
 #'   color_sample_date()
 
 color_sample_date <- function() {
-  ggplot2::scale_color_manual(name =  "Sampling Date",
+  ggplot2::scale_color_manual(name =  "Day",
                      values = c( "#f1a226", "#9fc8c8", "#54a1a1", "#1f6f6f"),
                      guide = "legend")
 }
 
+fill_sample_date <- function() {
+  ggplot2::scale_fill_manual(name =  "Day",
+                              values = c( "#f1a226", "#9fc8c8", "#54a1a1", "#1f6f6f"),
+                              guide = "legend")
+}
+
 fill_sample_date_no_zero <- function() {
-  ggplot2::scale_fill_manual(name =  "Sampling Date",
+  ggplot2::scale_fill_manual(name =  "Day",
                              values = c("#e7dff1", "#c9bbd8", "#ac98c1"),
                              guide = "legend")
 }
 
 color_sample_date_no_zero <- function() {
-  ggplot2::scale_color_manual(name =  "Sampling Date",
+  ggplot2::scale_color_manual(name =  "Day",
                               values = c("#e7dff1", "#c9bbd8", "#ac98c1"),
                               guide = "legend")
 }

@@ -3,13 +3,13 @@ library(modelsummary)
 # Run all the other scripts beforehand before running this.
 
 # Can do it with modelsummary
-modelsummary((mice::pool(models_time_comparison$glu.xyl_cbh.median)))
+modelsummary::modelsummary((mice::pool(models_time_comparison$glu.xyl_cbh.median)))
 #which can broom the mice models and compare them as well
 modelsummary(models_time_comparison$glu.xyl_cbh.median, modelsummary_get = "broom")
 
 
 # Can also do it with stargazer
-stargazer(models_time_comparison$glu.xyl_cbh.median[[1]], models_time_comparison$xyl_gly.median[[1]],
+stargazer::stargazer(models_time_comparison$glu.xyl_cbh.median[[1]], models_time_comparison$xyl_gly.median[[1]],
           type = "text", single.row = TRUE )
 
 
@@ -25,6 +25,9 @@ models <- list("Cbh / L-DOPA" = mice::pool(models_time_comparison$cbh_ldopa.medi
 
 
 # Print the statistics of the models
-modelsummary(models, statistic = "statistic", stars = TRUE, fmt = fmt_decimal(digits = 2),
-             gof_map = c("nobs"))
-
+modelsummary(models,
+             statistic = "({std.error})",
+             stars = TRUE,
+             fmt = fmt_decimal(digits = 1),
+             gof_map = c("nobs"),
+             output = "output/model_summary.csv")
