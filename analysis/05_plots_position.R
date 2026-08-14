@@ -32,7 +32,7 @@ significant_p_values_position <- output_position %>%
                                         "glu_ldopa.median", "glu_nag.median",
                                         "glu_pep.median", "pep_pho.median",
                                         "xyl_gly.median", "nag_ldopa.median"),
-                         labels = c("Cbh / Pox", "Glu + Xyl / \n Cbh",
+                         labels = c("Cbh / Pox", "(Glu + Xyl) / \n Cbh",
                                     "Glu / Pox", "Glu / NAG",
                                     "Glu / Pep", "Pep / Pho",
                                     "Xyl / Glu", "NAG / Pox")))
@@ -116,7 +116,7 @@ ribbon_data <- melted_pooled_data |>
                                           "glu_ldopa.median", "glu_nag.median",
                                           "glu_pep.median", "pep_pho.median",
                                           "xyl_gly.median", "nag_ldopa.median"),
-                           labels = c("Cbh / Pox", "Glu + Xyl / \n Cbh",
+                           labels = c("Cbh / Pox", "(Glu + Xyl) / \n Cbh",
                                       "Glu / Pox", "Glu / NAG",
                                       "Glu / Pep", "Pep / Pho",
                                       "Xyl / Glu", "NAG / Pox")),
@@ -150,9 +150,9 @@ facet_labels <- data.frame(
 enzyme_all_position_with_p <- enzyme_plot_position +
   geom_text(data = facet_labels, aes(x = levels(ER_data_long$position)[3],  # Leftmost position
                                      y = Inf, label = label, group = enzyme),
-            inherit.aes = FALSE, hjust = -0.9,  vjust = 1.5, size = 4)
+            inherit.aes = FALSE, hjust = -1.5,  vjust = 1.5, size = 4)
 
 
-pdf('output/plots/enzyme_all_position.pdf', width = 10, height = 8)
+pdf('output/plots/enzyme_all_position.pdf', width = 9, height = 8)
 plot(enzyme_all_position_with_p)
 dev.off()

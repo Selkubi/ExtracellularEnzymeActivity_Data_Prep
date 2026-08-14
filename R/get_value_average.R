@@ -5,7 +5,7 @@
 #' @param x A character string representing the name of the argument to extract from the emmGrid objects.
 #' @param data A list of emmGrid objects from which to extract the contrasts and p-values.
 #'
-#' @return A data frame containing the contrasts, positions, and the average values until the 2nd significant figure.
+#' @return A data frame containing the contrasts, positions, and the average values at full precision.
 #' @export
 #'
 #' @examples
@@ -26,6 +26,10 @@ get_value_average <- function(x, list){
   # Convert the list of p-values to a matrix
   var_name <- do.call(rbind, list)
 
-  # Compute the average p-value for each pairwise comparison
-  return(apply(var_name, 2, mean)|> signif(digits = 2))
+  # Compute the average p-value for each pairwise comparison.
+  # Returned at full precision: rounding here would be applied before the
+  # `< 0.05` / `< 0.01` / `< 0.001` comparisons in the plot scripts, silently
+  # demoting p-values that sit just below a threshold (e.g. 0.0499 -> 0.05).
+  # Round at presentation time instead.
+  return(apply(var_name, 2, mean))
 }

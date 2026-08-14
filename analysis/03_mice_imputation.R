@@ -1,6 +1,10 @@
 # this scripts follows the same strategy in 02_mixed model but does it within the mice imputation
 # MICE imputation
-imputed_data <- mice::mice(ER_data, m = 5, method = 'pmm', seed = 123)
+pred <- mice::make.predictorMatrix(ER_data)
+pred[, c("sample", "columnID", "chainID")] <- 0
+imputed_data <- mice::mice(ER_data, m = 100, method = 'pmm', seed = 123,
+                           predictorMatrix = pred)
+nrow(imputed_data$loggedEvents)
 summary(imputed_data)
 completed_datasets <- lapply(1:5, function(i) mice::complete(imputed_data, i))
 
