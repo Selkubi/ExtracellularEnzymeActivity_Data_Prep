@@ -3,7 +3,7 @@ library(modelsummary)
 # Run all the other scripts beforehand before running this.
 
 # Can do it with modelsummary
-modelsummary((mice::pool(models_time_comparison$glu.xyl_cbh.median)))
+modelsummary::modelsummary((mice::pool(models_time_comparison$glu.xyl_cbh.median)))
 #which can broom the mice models and compare them as well
 modelsummary(models_time_comparison$glu.xyl_cbh.median, modelsummary_get = "broom")
 

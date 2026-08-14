@@ -32,7 +32,7 @@ significant_p_values_position <- output_position %>%
                                         "glu_ldopa.median", "glu_nag.median",
                                         "glu_pep.median", "pep_pho.median",
                                         "xyl_gly.median", "nag_ldopa.median"),
-                         labels = c("Cbh / Pox", "Glu + Xyl / \n Cbh",
+                         labels = c("Cbh / Pox", "(Glu + Xyl) / \n Cbh",
                                     "Glu / Pox", "Glu / NAG",
                                     "Glu / Pep", "Pep / Pho",
                                     "Xyl / Glu", "NAG / Pox")))
@@ -99,14 +99,44 @@ output_position_transformed <- significant_p_values_position |>
     )
   )
 
+# For the ribbons, calculate
+
+
+melted_pooled_data <- melt(pooled_data, id.vars = c("sample", "sample_date", "position", "replicate"))
+
+ribbon_data <- melted_pooled_data |>
+  group_by(variable, position, sample_date) |>
+  mutate(max = max(value),
+         min = min(value),
+         median = median(value),
+         mean = mean(value),
+         position = factor(position, levels = c("C1", "C2", "C3"),
+                           labels = c("C1", "C2", "C3")),
+         enzyme = factor(variable, levels = c("cbh_ldopa.median", "glu.xyl_cbh.median",
+                                          "glu_ldopa.median", "glu_nag.median",
+                                          "glu_pep.median", "pep_pho.median",
+                                          "xyl_gly.median", "nag_ldopa.median"),
+                           labels = c("Cbh / Pox", "(Glu + Xyl) / \n Cbh",
+                                      "Glu / Pox", "Glu / NAG",
+                                      "Glu / Pep", "Pep / Pho",
+                                      "Xyl / Glu", "NAG / Pox")),
+         sample_date = factor(sample_date,
+                                levels = c("S09", "S13", "S16", "S19"),
+                                labels = c("0", "03", "10", "17")))
+
 enzyme_plot_position <- ggplot(ER_data_long, aes(x = position, y = median_value, group = sample_date, color = sample_date, shape = sample_date)) +
   facet_wrap(~enzyme, nrow = 4, scale = "free",
              strip.position = "left", axes = "all", axis.labels = "all_y") +
   geom_point(size = 1.5, position = pd, alpha = 0.3) +
   geom_point(data = model_data_long, aes(x = position , y = median_value), size = 2.2, position = pd) +
   geom_linerange(data = model_data_long, aes(ymin = lower, ymax = upper), position = pd, show.legend = TRUE) +
-  theme_boxplot() + xlab("Days") + ylab("Enzyme Ratios") + scale_shape_manual(values = c(15, 16, 17, 18)) +
-  color_sample_date() + labs(color  = "Sampling Date", shape = "Sampling Date") +
+ # geom_ribbon(data = ribbon_data, aes(x = position, ymax = max, ymin = min,
+      #                                group = sample_date, fill = sample_date),
+       #       position = pd, inherit.aes = F, alpha = 0.2, show.legend = FALSE) +
+  geom_line(data = model_data_long, aes(x = position , y = median_value), position = pd) +
+  theme_boxplot() + xlab("Position") + ylab("Enzyme Ratios") + scale_shape_manual(values = c(15, 16, 17, 18)) +
+  color_sample_date() + fill_sample_date() +
+  labs(color  = "Day", shape = "Day") +
   ggpubr::stat_pvalue_manual(data = output_position_transformed, label = "p_symbol", y.position = "y_max",
                              step.increase = 0.1, step.group.by = "ER",
                              xmin = "x_start_jittered", xmax = "x_end_jittered",
@@ -120,9 +150,9 @@ facet_labels <- data.frame(
 enzyme_all_position_with_p <- enzyme_plot_position +
   geom_text(data = facet_labels, aes(x = levels(ER_data_long$position)[3],  # Leftmost position
                                      y = Inf, label = label, group = enzyme),
-            inherit.aes = FALSE, hjust = -0.1,  vjust = 1.7, size = 4)
+            inherit.aes = FALSE, hjust = -1.5,  vjust = 1.5, size = 4)
 
 
-pdf('output/plots/enzyme_all_position.pdf', width = 7, height = 8)
+pdf('output/plots/enzyme_all_position.pdf', width = 9, height = 8)
 plot(enzyme_all_position_with_p)
 dev.off()

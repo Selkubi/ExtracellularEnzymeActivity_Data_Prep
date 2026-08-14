@@ -1,9 +1,26 @@
 # this scripts follows the same strategy in 02_mixed model but does it within the mice imputation
 # MICE imputation
-imputed_data <- mice::mice(ER_data, m = 5, method = 'pmm', seed = 123)
+pred <- mice::make.predictorMatrix(ER_data)
+pred[, c("sample", "columnID", "chainID")] <- 0
+imputed_data <- mice::mice(ER_data, m = 100, method = 'pmm', seed = 123,
+                           predictorMatrix = pred)
+nrow(imputed_data$loggedEvents)
 summary(imputed_data)
 completed_datasets <- lapply(1:5, function(i) mice::complete(imputed_data, i))
 
+# Manual averaging across all imputed datasets
+# will be used for plotting later on
+pooled_data <- completed_datasets %>%
+  lapply(function(df) dplyr::select(df, sample, where(is.numeric))) %>%
+  bind_rows() %>% group_by(sample) %>%
+  summarise(across(where(is.numeric), mean)) %>%
+  dplyr::select(-columnID) %>%
+  as.data.table()
+
+pooled_data[, c("sample_date", "replicate", "position") := tstrsplit(pooled_data$sample, "_")]
+
+
+# model trial
 models <- lapply(X = completed_datasets, FUN = experiment_lmer, response_col = "xyl_gly.median", y = "day", fixed_factor = "position", random_factor = "chainID")
 lp <- lapply(models, function(model, data){
   time_comparison(model, data = completed_datasets)
