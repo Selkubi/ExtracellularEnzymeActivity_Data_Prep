@@ -32,10 +32,10 @@ significant_p_values_position <- output_position %>%
                                         "glu_ldopa.median", "glu_nag.median",
                                         "glu_pep.median", "pep_pho.median",
                                         "xyl_gly.median", "nag_ldopa.median"),
-                         labels = c("Cbh /\n L-DOPA", "Glu + Xyl / \n Cbh",
-                                    "Glu /\n L-DOPA", "Glu / NAG",
+                         labels = c("Cbh / Pox", "Glu + Xyl / \n Cbh",
+                                    "Glu / Pox", "Glu / NAG",
                                     "Glu / Pep", "Pep / Pho",
-                                    "Xyl / Glu", "NAG /\n L-DOPA")))
+                                    "Xyl / Glu", "NAG / Pox")))
 
 # Function to safely determine the maximum y position for a given enzyme and day
 safe_max <- function(enzyme_val, day_val) {
@@ -55,8 +55,8 @@ line_segments_position <- significant_p_values_position %>%
   mutate(
     # Determine the y positions for the start and end of each line
     y_max = mapply(function(enzyme_val, contrast_val) {
-      day_start <- paste0("Column ", sub("^C([0-9]+).*$", "\\1", contrast_val))
-      day_end <- paste0("Column ", sub("^C[0-9]+.*C([0-9]+).*$", "\\1", contrast_val))
+      day_start <- paste0("C", sub("^C([0-9]+).*$", "\\1", contrast_val))
+      day_end <- paste0("C", sub("^C[0-9]+.*C([0-9]+).*$", "\\1", contrast_val))
       max_y <- max(
         safe_max(enzyme_val, day_start),
         safe_max(enzyme_val, day_end)
@@ -111,15 +111,15 @@ ribbon_data <- melted_pooled_data |>
          median = median(value),
          mean = mean(value),
          position = factor(position, levels = c("C1", "C2", "C3"),
-                           labels = c("Column 1", "Column 2", "Column 3")),
+                           labels = c("C1", "C2", "C3")),
          enzyme = factor(variable, levels = c("cbh_ldopa.median", "glu.xyl_cbh.median",
                                           "glu_ldopa.median", "glu_nag.median",
                                           "glu_pep.median", "pep_pho.median",
                                           "xyl_gly.median", "nag_ldopa.median"),
-                           labels = c("Cbh /\n L-DOPA", "Glu + Xyl / \n Cbh",
-                                      "Glu /\n L-DOPA", "Glu / NAG",
+                           labels = c("Cbh / Pox", "Glu + Xyl / \n Cbh",
+                                      "Glu / Pox", "Glu / NAG",
                                       "Glu / Pep", "Pep / Pho",
-                                      "Xyl / Glu", "NAG /\n L-DOPA")),
+                                      "Xyl / Glu", "NAG / Pox")),
          sample_date = factor(sample_date,
                                 levels = c("S09", "S13", "S16", "S19"),
                                 labels = c("0", "03", "10", "17")))

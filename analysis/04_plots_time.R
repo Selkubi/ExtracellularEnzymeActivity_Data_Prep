@@ -47,10 +47,10 @@ data <-  date_0_ratios |>
                                                         "ratio_glu_ldopa.median", "ratio_glu_nag.median",
                                                         "ratio_glu_pep.median", "ratio_pep_pho.median",
                                                         "ratio_xyl_gly.median", "ratio_nag_ldopa.median"),
-                                  labels = c("Cbh /\n L-DOPA", "Glu + Xyl / \n Cbh",
-                                             "Glu /\n L-DOPA", "Glu / NAG",
+                                  labels = c("Cbh / Pox", "Glu + Xyl / \n Cbh",
+                                             "Glu / Pox", "Glu / NAG",
                                              "Glu / Pep", "Pep / Pho",
-                                             "Xyl / Glu", "NAG /\n L-DOPA")))
+                                             "Xyl / Glu", "NAG / Pox")))
 
 ribbon_info <- data |>
   group_by(variable, col_no, sample_date) |>
@@ -124,12 +124,12 @@ ER_data_long <- ER_data |>
                                                 "glu_ldopa.median", "glu_nag.median",
                                                 "glu_pep.median", "pep_pho.median",
                                                 "xyl_gly.median", "nag_ldopa.median"),
-                            labels = c("Cbh /\n L-DOPA", "Glu + Xyl / \n Cbh",
-                                       "Glu /\n L-DOPA", "Glu / NAG",
+                            labels = c("Cbh / Pox", "Glu + Xyl / \n Cbh",
+                                       "Glu / Pox", "Glu / NAG",
                                        "Glu / Pep", "Pep / Pho",
-                                       "Xyl / Glu", "NAG /\n L-DOPA")),
+                                       "Xyl / Glu", "NAG / Pox")),
                         position = factor(position, levels = c("C1", "C2", "C3"),
-                            labels = c("Column 1", "Column 2", "Column 3")))
+                            labels = c("C1", "C2", "C3")))
 
 model_data_long <- lapply(names(effects_list), function(enzyme) {
   df <- effects_list[[enzyme]]
@@ -141,14 +141,14 @@ model_data_long <- lapply(names(effects_list), function(enzyme) {
                                             "glu_ldopa.median", "glu_nag.median",
                                             "glu_pep.median", "pep_pho.median",
                                             "xyl_gly.median", "nag_ldopa.median"),
-                         labels = c("Cbh /\n L-DOPA", "Glu + Xyl / \n Cbh",
-                                    "Glu /\n L-DOPA", "Glu / NAG",
+                         labels = c("Cbh / Pox", "Glu + Xyl / \n Cbh",
+                                    "Glu / Pox", "Glu / NAG",
                                     "Glu / Pep", "Pep / Pho",
-                                    "Xyl / Glu", "NAG /\n L-DOPA")),
+                                    "Xyl / Glu", "NAG / Pox")),
          sample_date = factor(day, levels = c("S09", "S13", "S16", "S19"),
                               labels = c("0", "03", "10", "17")),
          position = factor(position, levels = c("C1", "C2", "C3"),
-                           labels = c("Column 1", "Column 2", "Column 3")))
+                           labels = c("C1", "C2", "C3")))
 
 # setting the dodge distance
 pd <- position_dodge(width=0.4)
@@ -160,12 +160,12 @@ significant_p_values <- output_time %>%
                                             "glu_ldopa.median", "glu_nag.median",
                                             "glu_pep.median", "pep_pho.median",
                                             "xyl_gly.median", "nag_ldopa.median"),
-                         labels = c("Cbh /\n L-DOPA", "Glu + Xyl / \n Cbh",
-                                    "Glu /\n L-DOPA", "Glu / NAG",
+                         labels = c("Cbh / Pox", "Glu + Xyl / \n Cbh",
+                                    "Glu / Pox", "Glu / NAG",
                                     "Glu / Pep", "Pep / Pho",
-                                    "Xyl / Glu", "NAG /\n L-DOPA")),
+                                    "Xyl / Glu", "NAG / Pox")),
          position = factor(position, levels = c("C1", "C2", "C3"),
-                           labels = c("Column 1", "Column 2", "Column 3")))
+                           labels = c("C1", "C2", "C3")))
 
 # Function to safely determine the maximum y position for a given enzyme and day
 safe_max <- function(enzyme_val, day_val) {
@@ -207,14 +207,14 @@ output_time_transformed <- significant_p_values |>
       TRUE ~ ""
     ),
     x_start_jittered = case_when(
-      position == "Column 1" ~ x_start - 0.15,
-      position == "Column 2" ~ x_start,
-      position == "Column 3" ~ x_start + 0.15
+      position == "C1" ~ x_start - 0.15,
+      position == "C2" ~ x_start,
+      position == "C3" ~ x_start + 0.15
     ),
     x_end_jittered = case_when(
-      position == "Column 1" ~ x_end - 0.15,
-      position == "Column 2" ~ x_end ,
-      position == "Column 3" ~ x_end + 0.15
+      position == "C1" ~ x_end - 0.15,
+      position == "C2" ~ x_end ,
+      position == "C3" ~ x_end + 0.15
     )
    )
 
